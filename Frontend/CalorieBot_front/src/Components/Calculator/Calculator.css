@@ -1,6 +1,6 @@
 @import "../../App.css";
 .container{
-    width: 45%;
+    width: 35%;
     height: 75vh;
 }
 
@@ -13,11 +13,21 @@
     align-items: center;
 }
 
+/* results div */
 .results{
-    display: inline-block;
+    display: block;
     margin-top: 20px;
     margin-bottom: 20px;
     text-align: center;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.results-show {
+    max-height: 200px;
+    opacity: 1;
 }
 .results-span{
     display: inline-block;
@@ -25,4 +35,53 @@
     padding: 5px;
     width: 100px;
     border-radius: 15px;
+}
+.inputs {
+    display: flex; 
+
+    width: 100%;
+    gap: 20px;
+    
+    padding-top: 20px;
+    padding-bottom: 20px;
+
+    align-items: center;
+    flex-direction: column;
+}
+  
+.input-group {
+    display: flex;
+    justify-content:space-between;
+    gap: 20px;
+}
+  
+.input-group label {
+    font-size: 20px;
+    font-weight: 500;
+    width: 250px;
+}
+.heart-rate-inputs {
+    display: flex;
+    gap: 10px;
+    width: 300px; 
+}
+  
+.heart-rate-inputs input {
+    flex: 1;
+    padding: 8px;
+    border-radius: 15px;
+    font-size: 16px;
+    width: 30%;
+}
+  
+.workout-select {
+    width: 300px;
+    border-radius: 15px;
+    font-size: 16px;
+}
+  
+.timer-input, .water-input {
+    width: 300px;
+    border-radius: 15px;
+    font-size: 16px;
 }

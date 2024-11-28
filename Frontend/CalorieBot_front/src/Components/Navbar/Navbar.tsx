@@ -36,8 +36,8 @@ function Navbar() {
           </div>
           {/* for now just icons for show, will soon be individual components */}
           <div className="options-icons">
-            <NotificationsNoneIcon></NotificationsNoneIcon>
             <BedtimeIcon onClick={toggleTheme}></BedtimeIcon>
+            <NotificationsNoneIcon></NotificationsNoneIcon>
             <PersonOutlineIcon></PersonOutlineIcon>
           </div>
         </div>
