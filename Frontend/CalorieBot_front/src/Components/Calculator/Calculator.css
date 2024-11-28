@@ -1,4 +1,28 @@
 @import "../../App.css";
-.calculator{
-    width: 50%;
+.container{
+    width: 45%;
+    height: 75vh;
+}
+
+.calculator-main{
+    height: 90%;
+}
+.calculator-footer{
+    height: 10%;
+    text-align: center;
+    align-items: center;
+}
+
+.results{
+    display: inline-block;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.results-span{
+    display: inline-block;
+    margin: 10px;
+    padding: 5px;
+    width: 100px;
+    border-radius: 15px;
 }

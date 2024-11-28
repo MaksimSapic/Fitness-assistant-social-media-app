@@ -1,0 +1,9 @@
+.wrapper{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.stats{
+    width: 45%;
+    height: 75vh;
+}

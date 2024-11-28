@@ -7,17 +7,29 @@
 
 /* Every card div will have these properties */
 .screen-element{
+    margin: 8px;
     border-radius: 17px;
+    border: 1px solid ;
     padding: 5px;
 }
 
 /* every button within the app */
+/* transitions are to be decided */
 .button{
+    cursor:pointer;
     font-size: 18px;
     
+    font-weight: bold;
+
     width: 85px;
     height: 35px;
 
     border-radius: 30px;
-    border: none;
+    border: 1px solid transparent;
 }
+.button-submit{
+    width: 150px;
+    height: 55px;
+    font-size: 14px;
+}
+
