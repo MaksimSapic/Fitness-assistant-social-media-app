@@ -1,9 +1,14 @@
+@import "../../App.css";
+
 .wrapper{
-    display: flex;
+    display:flex;
+    width: 1000px;
+    /* flex-direction: row; */
     align-items: center;
     justify-content: center;
+    margin: auto;
 }
 .stats{
-    width: 45%;
     height: 75vh;
+    justify-content:space-around;
 }

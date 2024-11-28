@@ -1,16 +1,14 @@
 @import "../../App.css";
-.container{
-    width: 35%;
-    height: 75vh;
-}
 
-.calculator-main{
-    height: 90%;
+.container{
+    padding: 10px;
+    height: 75vh;
+    margin: 0;
 }
 .calculator-footer{
-    height: 10%;
     text-align: center;
-    align-items: center;
+    flex-shrink: 1;
+    margin-bottom: 20px;
 }
 
 /* results div */
@@ -19,14 +17,15 @@
     margin-top: 20px;
     margin-bottom: 20px;
     text-align: center;
-    max-height: 0;
+    height: 0;
     opacity: 0;
     overflow: hidden;
     transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
 }
-
 .results-show {
-    max-height: 200px;
+    height: 200px;
+    text-align: center;
+    align-content: center;
     opacity: 1;
 }
 .results-span{
@@ -36,50 +35,51 @@
     width: 100px;
     border-radius: 15px;
 }
+
+/* inputs */
 .inputs {
     display: flex; 
 
     width: 100%;
     gap: 20px;
     
-    padding-top: 20px;
-    padding-bottom: 20px;
+    margin-top: 40px;
+    margin-bottom: 40px;
 
     align-items: center;
     flex-direction: column;
 }
-  
 .input-group {
     display: flex;
     justify-content:space-between;
-    gap: 20px;
+    width: 100%;
+    gap: 10px;
 }
-  
 .input-group label {
     font-size: 20px;
     font-weight: 500;
     width: 250px;
 }
+
 .heart-rate-inputs {
     display: flex;
     gap: 10px;
     width: 300px; 
 }
-  
 .heart-rate-inputs input {
     flex: 1;
     padding: 8px;
     border-radius: 15px;
     font-size: 16px;
     width: 30%;
-}
-  
+} 
+
+
 .workout-select {
     width: 300px;
     border-radius: 15px;
     font-size: 16px;
 }
-  
 .timer-input, .water-input {
     width: 300px;
     border-radius: 15px;

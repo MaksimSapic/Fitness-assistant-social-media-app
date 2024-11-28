@@ -1,0 +1,8 @@
+@import "../../../App.css";
+
+.chart{
+    display: inline-block;
+}
+h3{
+    margin: 10px;
+}

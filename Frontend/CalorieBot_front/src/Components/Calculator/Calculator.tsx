@@ -12,7 +12,6 @@ function Calculator() {
           className="screen-element"
           style={{
             backgroundColor: theme.element,
-            border: "1px solid " + theme.border,
           }}
         >
           <div className="calculator-main">
@@ -63,7 +62,7 @@ function Calculator() {
 
               <div className="input-group">
                 <label style={{ color: theme.text_plain }}>
-                  What type of workout did you do?
+                  What kind of workout did you do?
                 </label>
                 <select
                   className="workout-select"
@@ -82,7 +81,7 @@ function Calculator() {
                 </select>
               </div>
 
-              <div className="input-group">
+              <div className="input-group length">
                 <label style={{ color: theme.text_plain }}>
                   How long was your session?
                 </label>
@@ -97,7 +96,7 @@ function Calculator() {
                 />
               </div>
 
-              <div className="input-group">
+              <div className="input-group water">
                 <label style={{ color: theme.text_plain }}>
                   How much water did you drink?
                 </label>
@@ -121,15 +120,19 @@ function Calculator() {
                   color: theme.text_plain,
                 }}
               >
-                Caloroies burned today:
+                Congratulations on your workout,
+                <br />
+                today you burned this many calories:
+                <br />
                 <p
                   className="results-span"
                   style={{
                     backgroundColor: theme.interactable,
                     color: theme.text,
+                    fontWeight: 100,
                   }}
                 >
-                  {caloriesBurned}
+                  {caloriesBurned + " kcal"}
                 </p>
               </h2>
             </div>

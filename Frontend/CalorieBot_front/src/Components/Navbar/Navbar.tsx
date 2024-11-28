@@ -4,8 +4,12 @@ import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import { useTheme } from "../../Theme/Theme";
 import { darkTheme, lightTheme } from "../../Theme/themeType";
 import "./Navbar.css";
+import { Link } from "react-router-dom";
+import { useState } from "react";
 function Navbar() {
   const { theme, toggleTheme } = useTheme();
+  const [selected, setSelected] = useState("Home");
+
   return (
     <>
       <nav
@@ -17,28 +21,58 @@ function Navbar() {
         <p className="nav-left">CalorieBot</p>
         <div className="nav-right">
           <div className="options-buttons">
-            <button
-              className="button"
+            <Link
+              className="nav-link"
               style={{
-                backgroundColor: theme.interactable,
+                color: theme.text,
+                backgroundColor:
+                  selected == "Home" ? theme.background : theme.element,
               }}
+              onClick={() => {
+                setSelected("Home");
+              }}
+              to="/"
+              key="Home"
             >
               Home
-            </button>
-            <button
-              className="button"
+            </Link>
+            <Link
+              className="nav-link"
               style={{
-                backgroundColor: theme.interactable,
+                color: theme.text,
+                backgroundColor:
+                  selected == "News" ? theme.background : theme.element,
               }}
+              onClick={() => {
+                setSelected("News");
+              }}
+              to="/news"
             >
               News
-            </button>
+            </Link>
           </div>
           {/* for now just icons for show, will soon be individual components */}
+
           <div className="options-icons">
-            <BedtimeIcon onClick={toggleTheme}></BedtimeIcon>
-            <NotificationsNoneIcon></NotificationsNoneIcon>
-            <PersonOutlineIcon></PersonOutlineIcon>
+            <BedtimeIcon
+              style={{
+                backgroundColor: theme.background,
+                borderRadius: 90,
+              }}
+              onClick={toggleTheme}
+            ></BedtimeIcon>
+            <NotificationsNoneIcon
+              style={{
+                backgroundColor: theme.background,
+                borderRadius: 90,
+              }}
+            ></NotificationsNoneIcon>
+            <PersonOutlineIcon
+              style={{
+                backgroundColor: theme.background,
+                borderRadius: 90,
+              }}
+            ></PersonOutlineIcon>
           </div>
         </div>
       </nav>
