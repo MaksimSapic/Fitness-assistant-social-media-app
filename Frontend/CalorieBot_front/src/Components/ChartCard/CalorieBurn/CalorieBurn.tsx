@@ -35,15 +35,16 @@ function ChardCard() {
           style={{
             backgroundColor: theme.background,
             borderRadius: 15,
+            transition: "0.5s ease-in",
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />
           <YAxis />
           <Tooltip />
-          <Legend />
+          {/* <Legend /> */}
           <Line type="monotone" dataKey="pv" stroke="#8884d8" />
-          <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
+          {/* <Line type="monotone" dataKey="uv" stroke="#82ca9d" /> */}
         </LineChart>
       </div>
     </>

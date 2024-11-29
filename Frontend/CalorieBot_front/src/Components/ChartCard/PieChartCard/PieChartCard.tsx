@@ -27,6 +27,7 @@ function PieChartCard() {
           style={{
             backgroundColor: theme.background,
             borderRadius: 15,
+            transition: "0.5s ease-in",
           }}
         >
           <Pie

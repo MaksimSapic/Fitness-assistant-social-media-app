@@ -2,6 +2,7 @@ import {
   Area,
   AreaChart,
   CartesianGrid,
+  Legend,
   Tooltip,
   XAxis,
   YAxis,
@@ -34,6 +35,7 @@ function SurfaceChart() {
           style={{
             backgroundColor: theme.background,
             borderRadius: 15,
+            transition: "0.5s ease-in",
           }}
         >
           <defs>
@@ -50,6 +52,7 @@ function SurfaceChart() {
           <YAxis />
           <CartesianGrid strokeDasharray="3 3" />
           <Tooltip />
+          <Legend />
           <Area
             type="monotone"
             dataKey="uv"

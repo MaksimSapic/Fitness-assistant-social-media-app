@@ -115,7 +115,7 @@ function Calculator() {
           </div>
           <div className="calculator-footer">
             <div className={`results results${results ? "-show" : ""}`}>
-              <h2
+              <h3
                 style={{
                   color: theme.text_plain,
                 }}
@@ -134,7 +134,7 @@ function Calculator() {
                 >
                   {caloriesBurned + " kcal"}
                 </p>
-              </h2>
+              </h3>
             </div>
             <button
               className="button button-submit"
