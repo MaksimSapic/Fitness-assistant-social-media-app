@@ -13,6 +13,7 @@ function Home() {
           <PieChartCard></PieChartCard>
           <SurfaceChart></SurfaceChart>
         </div>
+        <div className="clear"></div>
       </div>
     </>
   );
