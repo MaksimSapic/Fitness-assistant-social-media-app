@@ -21,14 +21,17 @@ import { ThemeContext } from "@emotion/react";
 function Navbar() {
   const { theme, toggleTheme } = useTheme();
   const [selected, setSelected] = useState("Home");
-  // stuff for dropdowns
-  const username = "Maksim Sapic";
+
+  const data = localStorage.getItem("user");
+  const user = data ? JSON.parse(data) : null;
+  const username = user ? user["first_name"] + " " + user["last_name"] : "";
+  //mock data
   const notifications = [
-    //mock data for now
     "make the login page",
     "backend is waiting",
     "jel sapunjas macora?",
   ];
+  // states for dropdowns
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const open = Boolean(anchorEl);
@@ -49,6 +52,7 @@ function Navbar() {
   };
   //
 
+  //notifications icon
   const notifs = (
     <>
       <Box
@@ -61,6 +65,7 @@ function Navbar() {
               backgroundColor: theme.background,
               borderRadius: 90,
               transition: "0.5s ease-in",
+              color: theme.icon,
             }}
             aria-controls={open ? "account-menu" : undefined}
             aria-haspopup="true"
@@ -73,6 +78,7 @@ function Navbar() {
         id="account-menu"
         open={isOpen("account-menu")}
         onClose={handleClose}
+        onClick={handleClose}
         slotProps={{
           paper: {
             elevation: 0,
@@ -104,6 +110,8 @@ function Navbar() {
         }}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+        disablePortal
+        keepMounted
       >
         {notifications.map((notif, index) => (
           <MenuItem key={index.toString()} onClick={handleClose}>
@@ -114,6 +122,7 @@ function Navbar() {
     </>
   );
 
+  //profile icon
   const profile = (
     <>
       <Box
@@ -126,6 +135,7 @@ function Navbar() {
               backgroundColor: theme.background,
               borderRadius: 90,
               transition: "0.5s ease-in",
+              color: theme.icon,
             }}
             aria-controls={open ? "notifications-menu" : undefined}
             aria-haspopup="true"
@@ -138,6 +148,7 @@ function Navbar() {
         id="notifications-menu"
         open={isOpen("notifications-menu")}
         onClose={handleClose}
+        onClick={handleClose}
         slotProps={{
           paper: {
             elevation: 0,
@@ -167,6 +178,8 @@ function Navbar() {
             },
           },
         }}
+        disablePortal
+        keepMounted
       >
         <MenuItem onClick={handleClose}>
           <Avatar />
@@ -203,7 +216,8 @@ function Navbar() {
             style={{ color: theme.text }}
             to="/login"
             onClick={() => {
-              setSelected("logout");
+              // setSelected("logout");
+              localStorage.removeItem("user");
             }}
           >
             <ListItemIcon>
@@ -215,6 +229,8 @@ function Navbar() {
       </Menu>
     </>
   );
+
+  // NAVBAR CODE
   return (
     <>
       <nav
@@ -264,6 +280,7 @@ function Navbar() {
                   backgroundColor: theme.background,
                   borderRadius: 90,
                   transition: "0.5s ease-in",
+                  color: theme.icon,
                 }}
                 onClick={toggleTheme}
               ></BedtimeIcon>
@@ -276,4 +293,5 @@ function Navbar() {
     </>
   );
 }
+
 export default Navbar;
