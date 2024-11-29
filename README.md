@@ -15,11 +15,19 @@ CLIENT APP:
 
 
 -Posting, text markup, comments
+
+
 -image upload, attachments(nuitrition plans and such documents)
+
+
 -Keeping track of personal stats and workout results
 
 -ability to search for other users of the app
+
+
 -"Following" other users and recieving notifications of their posts
 
 -Account settings and personal data editing
+
+
 -registering as a "professional" -> someone to ask for advice on the app
