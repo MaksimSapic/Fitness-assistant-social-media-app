@@ -239,7 +239,12 @@ function Navbar() {
           color: theme.text,
         }}
       >
-        <p className="nav-left">CalorieBot</p>
+        <h3
+          className="nav-left"
+          style={{ color: theme.text, transition: "0.5s ease-in" }}
+        >
+          CalorieBot
+        </h3>
         <div className="nav-right">
           <div className="options-buttons">
             <Link
