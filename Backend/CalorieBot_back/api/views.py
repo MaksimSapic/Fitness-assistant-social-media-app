@@ -52,7 +52,7 @@ def calculate_calories(request):
         workout_data = {
             "Session_Duration": float(session_data['Session_Duration']),
             "Avg_BPM": int(session_data['Avg_BPM']),
-            "Age": 56, int(session_data['Age']),
+            "Age": int(session_data['Age']),
             "Gender": session_data['Gender'], #OVDE SALJI STRING (Male/Female) DOLE CE DA SE ENKODIRA
             "Fat_Percentage": float(session_data['Fat_Percentage'])
         }
