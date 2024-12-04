@@ -9,9 +9,11 @@ from .models import User
 from .serializers import UserSerializer
 import pickle
 
-# Create your views here.
+model_path = os.path.join(settings.BASE_DIR, 'AI_model', 'final_model.pkl')
 
-model_path = os.path.join(settings.BASE_DIR, 'AI_model', 'model.pkl')
+def encode_gender(X):
+    return X.replace({'Male': 0, 'Female': 1}).astype(int)
+
 @api_view(['POST'])
 def register_user(request):
     print("user wants to register")
@@ -41,40 +43,41 @@ def login_user(request):
 @api_view(['POST'])
 def calculate_calories(request):
     try:
+
+        with open(model_path, 'rb') as f:
+            model = pickle.load(f)
         # Učitaj podatke iz zahteva
         session_data = request.data.get('session', {})
         print(session_data)
         workout_data = {
             "Session_Duration": float(session_data['Session_Duration']),
             "Avg_BPM": int(session_data['Avg_BPM']),
-            "Age": float(session_data['Age']),
-            "Gender": session_data['Gender'],
+            "Age": 56, int(session_data['Age']),
+            "Gender": session_data['Gender'], #OVDE SALJI STRING (Male/Female) DOLE CE DA SE ENKODIRA
             "Fat_Percentage": float(session_data['Fat_Percentage'])
         }
 
         print(workout_data)
+        print("pickle loaded")
+        # Redosled kolona za model
+        feature_order = [
+            "Session_Duration", 
+            "Avg_BPM",
+            "Age",
+            "Gender",
+            "Fat_Percentage"
+        ]
 
-        with open(model_path, 'rb') as f:
-            model = pickle.load(f)
-            print("pickle loaded")
-            # Redosled kolona za model
-            feature_order = [
-                "Session_Duration", 
-                "Avg_BPM",
-                "Age",
-                "Gender",
-                "Fat_Percentage"
-            ]
+        final_data = pd.DataFrame([workout_data], columns=feature_order)
+        final_data["Gender"] = encode_gender(final_data["Gender"]) #OVDE SE ENKODIRA
 
-            final_data = pd.DataFrame([workout_data], columns=feature_order)
+        print(final_data)
 
-            print(final_data)
-
-            calories_burned = model.predict(final_data)[0]
-            
-            return Response({
-                'calories_burned': calories_burned
-            }, status=status.HTTP_200_OK)
+        calories_burned = model.predict(final_data)[0]
+        
+        return Response({
+            'calories_burned': calories_burned
+        }, status=status.HTTP_200_OK)
 
     except Exception as e:
         return Response({
