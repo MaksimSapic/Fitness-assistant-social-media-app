@@ -9,10 +9,7 @@ from .models import User
 from .serializers import UserSerializer
 import pickle
 
-model_path = os.path.join(settings.BASE_DIR, 'AI_model', 'final_model.pkl')
-
-def encode_gender(X):
-    return X.replace({'Male': 0, 'Female': 1}).astype(int)
+model_path = os.path.join(settings.BASE_DIR, 'AI_model', 'model.pkl')
 
 @api_view(['POST'])
 def register_user(request):
@@ -53,7 +50,7 @@ def calculate_calories(request):
             "Session_Duration": float(session_data['Session_Duration']),
             "Avg_BPM": int(session_data['Avg_BPM']),
             "Age": int(session_data['Age']),
-            "Gender": session_data['Gender'], #OVDE SALJI STRING (Male/Female) DOLE CE DA SE ENKODIRA
+            "Gender": session_data['Gender'], #OVDE SALJI STRING (Male/Female) 
             "Fat_Percentage": float(session_data['Fat_Percentage'])
         }
 
@@ -69,7 +66,6 @@ def calculate_calories(request):
         ]
 
         final_data = pd.DataFrame([workout_data], columns=feature_order)
-        final_data["Gender"] = encode_gender(final_data["Gender"]) #OVDE SE ENKODIRA
 
         print(final_data)
 
