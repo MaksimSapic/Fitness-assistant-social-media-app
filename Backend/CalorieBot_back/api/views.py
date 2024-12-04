@@ -7,14 +7,11 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .models import User
 from .serializers import UserSerializer
-
-from joblib import load
+import pickle
 
 # Create your views here.
 
-scaler_path = os.path.join(settings.BASE_DIR, 'AI model', 'final_scaler.joblib')
-encoder_path = os.path.join(settings.BASE_DIR, 'AI model', 'final_encoder.joblib')
-model_path = os.path.join(settings.BASE_DIR, 'AI model', 'final_xgb_model.joblib')
+model_path = os.path.join(settings.BASE_DIR, 'AI_model', 'model.pkl')
 @api_view(['POST'])
 def register_user(request):
     print("user wants to register")
@@ -48,51 +45,36 @@ def calculate_calories(request):
         session_data = request.data.get('session', {})
         print(session_data)
         workout_data = {
+            "Session_Duration": float(session_data['Session_Duration']),
+            "Avg_BPM": int(session_data['Avg_BPM']),
             "Age": float(session_data['Age']),
             "Gender": session_data['Gender'],
-            "Avg_BPM": int(session_data['Avg_BPM']),
-            "Session_Duration": float(session_data['Session_Duration']),
             "Fat_Percentage": float(session_data['Fat_Percentage'])
         }
+
         print(workout_data)
-        # Putanja do modela, skalera i enkodera
-        scaler = load(scaler_path)
-        encoder = load(encoder_path)
-        model = load(model_path)
 
+        with open(model_path, 'rb') as f:
+            model = pickle.load(f)
+            print("pickle loaded")
+            # Redosled kolona za model
+            feature_order = [
+                "Session_Duration", 
+                "Avg_BPM",
+                "Age",
+                "Gender",
+                "Fat_Percentage"
+            ]
 
-        # Redosled kolona za model
-        feature_order = [
-            "Session_Duration", 
-            "Avg_BPM",
-            "Age",
-            "Gender",
-            "Fat_Percentage"
-        ]
+            final_data = pd.DataFrame([workout_data], columns=feature_order)
 
-        final_data = pd.DataFrame([workout_data], columns=feature_order)
-        print(final_data)
-        # ovo ne treba nista
-        numeric_features = [
-            "Session_Duration", 
-            "Avg_BPM", 
-            "Age",
-            "Fat_Percentage"
-        ]
+            print(final_data)
 
-        print(final_data)
-        final_data[numeric_features] = scaler.transform(final_data[numeric_features])
-
-        print(final_data)
-        final_data["Gender"] = encoder.transform(final_data["Gender"].values.reshape(-1, 1))
-
-        print(final_data)
-        # sve dovde
-        calories_burned = model.predict(final_data)[0]
-        
-        return Response({
-            'calories_burned': calories_burned
-        }, status=status.HTTP_200_OK)
+            calories_burned = model.predict(final_data)[0]
+            
+            return Response({
+                'calories_burned': calories_burned
+            }, status=status.HTTP_200_OK)
 
     except Exception as e:
         return Response({
