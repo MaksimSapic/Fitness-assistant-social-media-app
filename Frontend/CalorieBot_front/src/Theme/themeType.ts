@@ -7,7 +7,7 @@ export const lightTheme = {
   interactable: palette.light.interactable[500],
   background: palette.light.background[500],
   border: palette.light.border[500],
-  icon: "#000000",
+  icon: palette.light.icon[500],
 };
 
 export const darkTheme = {
@@ -15,10 +15,9 @@ export const darkTheme = {
   text: palette.dark.text[500],
   text_plain: palette.dark.text_plain[500],
   interactable: palette.dark.interactable[500],
-  // themeselection demonstration purposes
   background: palette.dark.background[800],
   border: palette.light.border[500],
-  icon: "#ffffff",
+  icon: palette.dark.icon[500],
 };
 
 export type ThemeType = typeof lightTheme;

@@ -1,0 +1,54 @@
+@import "../../App.css";
+
+.register-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: calc(10px + 1vh);
+}
+.register-container input,select{
+  width: 70%;
+  margin: 0.2vw;
+}
+.register-box {
+  width: calc(350px + 15vw);
+  max-width: 600px;
+  padding: calc(20px + 1.5vh) calc(20px + 1.5vw);
+}
+
+.form-group {
+  margin: calc(10px + 0.5vh) 0;
+}
+
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  margin: calc(15px + 1vh) 0;
+}
+
+.button-back,
+.button-next,
+.button-register {
+  width: calc(120px + 4vw);
+  padding: calc(8px + 0.4vh);
+}
+
+.login-link {
+  display: block;
+  margin-top: calc(15px + 1vh);
+  font-size: calc(0.7rem + 0.3vw);
+}
+
+.error-message {
+  color: #ff0000;
+  margin: calc(8px + 0.4vh) 0;
+  font-size: calc(0.7rem + 0.3vw);
+}
+
+h1 {
+  margin-bottom: 30px;
+}

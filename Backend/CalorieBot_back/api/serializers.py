@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, WorkoutSession
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True)
@@ -25,3 +25,12 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
+
+class WorkoutSessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WorkoutSession
+        fields = (
+            'id', 'heart_avg', 'heart_max', 'heart_rest', 
+            'workout_type', 'session_duration', 'water_intake', 
+            'calories_burned', 'created_at'
+        )

@@ -13,7 +13,11 @@ import Profile from "./Scenes/Profile/Profile";
 import Login from "./Scenes/Login/Login";
 import ProtectedRoute from "./Routes/ProtectedRoute";
 import Register from "./Scenes/Register/Register";
+import { Toaster } from 'react-hot-toast';
+import { useTheme } from "./Theme/Theme";
+
 function App() {
+  const {theme,toggleTheme} = useTheme();
   return (
     <>
       <Router>
@@ -40,6 +44,16 @@ function App() {
           </Route>
         </Routes>
       </Router>
+      <Toaster 
+        position="bottom-right"
+        toastOptions={{
+          style: {
+            borderRadius: '15px',
+            background: theme.element,
+            color: theme.text_plain,
+          },
+        }}
+      />
     </>
   );
 }

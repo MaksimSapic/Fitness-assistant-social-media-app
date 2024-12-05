@@ -7,13 +7,17 @@ function Home() {
   return (
     <>
       <div className="wrapper">
-        <Calculator></Calculator>
-        <div className="stats">
-          <CalorieBurn></CalorieBurn>
-          <PieChartCard></PieChartCard>
-          <SurfaceChart></SurfaceChart>
+        <div className="container">
+          <div className="calculator">
+            <Calculator></Calculator>
+          </div>
+          <div className="stats">
+            <CalorieBurn></CalorieBurn>
+            <PieChartCard></PieChartCard>
+            <SurfaceChart></SurfaceChart>
+          </div>
+          <div className="clear"></div>
         </div>
-        <div className="clear"></div>
       </div>
     </>
   );

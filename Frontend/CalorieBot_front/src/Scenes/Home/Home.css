@@ -1,14 +1,31 @@
 @import "../../App.css";
 
 .wrapper{
-    display:flex;
-    width: 1000px;
-    /* flex-direction: row; */
-    align-items: center;
-    justify-content: center;
     margin: auto;
 }
-.stats{
-    height: 75vh;
-    justify-content:space-around;
+.container{
+    display: flex;
+    flex-direction: row;
+}
+.calculator{
+    width: 50%;
+}
+.stats {
+    width: 50%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+    .calculator,
+    .stats {
+        width: 100%;
+    }
+    .chart-mini {
+        width: 95%;
+    }
 }
