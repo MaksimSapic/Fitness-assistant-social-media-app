@@ -66,3 +66,21 @@ class User(models.Model):
         salted = password.encode() + bytes.fromhex(salt)
         # Create hash using SHA-512
         return hashlib.sha512(salted).hexdigest()
+        
+class WorkoutSession(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='workout_sessions')
+    heart_avg = models.IntegerField()
+    heart_max = models.IntegerField()
+    heart_rest = models.IntegerField()
+    workout_type = models.CharField(max_length=50)
+    session_duration = models.FloatField()
+    water_intake = models.FloatField()
+    calories_burned = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'workout_sessions'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.user.username}'s workout on {self.created_at}"

@@ -2,21 +2,22 @@
 
 nav{
     display: flex;
-    height: 50px;
+    height: calc(40px + 1.5vw);
     justify-content: space-between;
-    border-bottom-left-radius: 17px;
-    border-bottom-right-radius: 17px;
-    padding-left: 20px;
-    padding-right: 20px;
-    box-shadow: 0px 2px 8px rgba(0,0,0,0.32);
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    padding-left: calc(10px + 1vw);
+    padding-right: calc(10px + 1vw);
+    box-shadow: 0px 2px 8px rgba(29, 22, 22, 0.32);
+    transition:0.5s ease;
 }
 /* nav left */
 .nav-left{
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 24px;
     font-weight: bold;
+    font-size: calc(1rem + 0.8vw);
 }
 
 /* nav right */
@@ -24,27 +25,28 @@ nav{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap:40px;
+    gap: calc(20px + 2vw);
 }
 
 .options-icons{
     display: flex;
     justify-content: space-between;
-    gap: 15px;
+    gap: calc(8px + 0.7vw);
 }
 .options-buttons{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 15px;
+    gap: calc(8px + 0.7vw);
 }
 
 .nav-link{
-    padding: 5px;
+    padding: calc(3px + 0.3vw);
     font-weight: bold;
     border-radius: 15px;
     text-decoration: none;
-    transition: 0.5s ease-in;
+    transition: 0.2s ease-in;
+    font-size: calc(0.8rem + 0.3vw);
 }
 
 .menu-link{

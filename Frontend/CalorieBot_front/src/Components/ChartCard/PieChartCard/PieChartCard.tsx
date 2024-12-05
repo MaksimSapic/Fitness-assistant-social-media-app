@@ -1,4 +1,11 @@
-import { Cell, Legend, Pie, PieChart, Tooltip } from "recharts";
+import {
+  Cell,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts";
 import data from "./MockData";
 import { useTheme } from "../../../Theme/Theme";
 import Colors from "../chart_colors";
@@ -11,7 +18,7 @@ function PieChartCard() {
         style={{
           backgroundColor: theme.element,
         }}
-        className="screen-element chart"
+        className="screen-element chart-mini"
       >
         <h3
           style={{
@@ -20,36 +27,56 @@ function PieChartCard() {
         >
           Types of workout
         </h3>
-        <PieChart
-          width={300}
-          height={300}
-          margin={{ top: 9, right: 30, left: 20, bottom: 5 }}
+
+        <div
           style={{
-            backgroundColor: theme.background,
-            borderRadius: 15,
-            transition: "0.5s ease-in",
+            position: "relative",
+            width: "100%",
+            height: "calc(200px + 15vh)",
+            minHeight: "250px",
           }}
         >
-          <Pie
-            data={data}
-            dataKey="value"
-            nameKey="name"
-            cx="50%"
-            cy="50%"
-            outerRadius={75}
-            fill="#8884d8"
-            // TODO find a way to make fill different colors
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+            }}
           >
-            {data.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={Colors[index % Colors.length]}
-              ></Cell>
-            ))}
-          </Pie>
-          <Tooltip />
-          <Legend />
-        </PieChart>
+            <ResponsiveContainer>
+              <PieChart
+                style={{
+                  backgroundColor: theme.background,
+                  borderRadius: 15,
+                  transition: "0.5s ease-in",
+                }}
+              >
+                <Pie
+                  data={data}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius="45%"
+                  fill="#8884d8"
+                >
+                  {data.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={Colors[index % Colors.length]}
+                    ></Cell>
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend
+                  wrapperStyle={{
+                    fontSize: 'calc(0.6rem + 0.3vw)',
+                    paddingTop: 'calc(5px + 0.5vh)'
+                  }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
       </div>
     </>
   );

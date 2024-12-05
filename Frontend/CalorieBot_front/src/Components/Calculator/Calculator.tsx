@@ -2,20 +2,23 @@ import { useState } from "react";
 import { useTheme } from "../../Theme/Theme";
 import "./Calculator.css";
 import config from "../../config";
+import { Select, MenuItem } from "@mui/material";
+import { toast } from "react-hot-toast";
 
 interface WorkoutData {
   heart_max: number;
   heart_avg: number;
   heart_rest: number;
   workout_type: string;
-  duration: string;
+  duration_hours: number;
+  duration_minutes: number;
+  duration: number;
   water_intake: number;
 }
 
 function Calculator() {
   const { theme } = useTheme();
   const [results, showResults] = useState(false);
-  const [caloriesBurned, setCaloriesBurned] = useState<number>(0);
   const userdata = localStorage.getItem("user");
   var user: any = null;
   if (userdata) user = JSON.parse(userdata);
@@ -23,8 +26,10 @@ function Calculator() {
     heart_max: 0,
     heart_avg: 0,
     heart_rest: 0,
-    workout_type: "",
-    duration: "00:00",
+    workout_type: "Select workout type",
+    duration_hours: 0,
+    duration_minutes: 0,
+    duration: 0,
     water_intake: 0,
   });
 
@@ -39,7 +44,73 @@ function Calculator() {
   };
 
   const calculateCalories = async () => {
-    console.log(user);
+    // Validation checks
+    if (
+      !workoutData.workout_type ||
+      workoutData.workout_type === "Select workout type"
+    ) {
+      toast.error("Please select a workout type", {
+        style: {
+          background: theme.element,
+          color: theme.text_plain,
+          borderRadius: "15px",
+        },
+      });
+      return;
+    }
+
+    if (workoutData.duration <= 0) {
+      toast.error("Please enter a valid duration", {
+        style: {
+          background: theme.element,
+          color: theme.text_plain,
+          borderRadius: "15px",
+        },
+      });
+      return;
+    }
+
+    if (workoutData.water_intake < 0) {
+      toast.error("Please enter a valid water intake", {
+        style: {
+          background: theme.element,
+          color: theme.text_plain,
+          borderRadius: "15px",
+        },
+      });
+      return;
+    }
+
+    if (
+      workoutData.heart_max <= 0 ||
+      workoutData.heart_avg <= 0 ||
+      workoutData.heart_rest <= 0
+    ) {
+      toast.error("Please enter all heart rate values", {
+        style: {
+          background: theme.element,
+          color: theme.text_plain,
+          borderRadius: "15px",
+        },
+      });
+      return;
+    }
+
+    if (
+      Number(workoutData.heart_max) <= Number(workoutData.heart_avg) ||
+      Number(workoutData.heart_avg) <= Number(workoutData.heart_rest)
+    ) {
+      toast.error("Invalid heart rate values. Max > Average > Rest", {
+        style: {
+          background: theme.element,
+          color: theme.text_plain,
+          borderRadius: "15px",
+        },
+      });
+      return;
+    }
+
+    // If all validations pass, proceed with the API call
     try {
       const response = await fetch(`${config.url}api/calculate-calories/`, {
         method: "POST",
@@ -48,6 +119,7 @@ function Calculator() {
         },
         body: JSON.stringify({
           session: {
+            id: user.id,
             Age: user.age,
             Weight: user.weight,
             Gender: user.gender == "M" ? "Male" : "Female",
@@ -68,191 +140,288 @@ function Calculator() {
 
       if (response.ok) {
         const data = await response.json();
-        setCaloriesBurned(data.calories);
+        toast.success(
+          <div>
+            <h2
+              style={{
+                color: theme.text_plain,
+                fontSize: "calc(0.8rem + 0.3vw)",
+                marginBottom: "4px",
+              }}
+            >
+              Congratulations! 🎉
+            </h2>
+            <h3
+              style={{
+                color: theme.text_plain,
+                fontSize: "calc(0.6rem + 0.2vw)",
+              }}
+            >
+              Calories burned: {Math.round(data.calories_burned)} kcal
+            </h3>
+          </div>,
+          {
+            duration: 5000,
+            style: {
+              background: theme.element,
+              padding: "12px",
+              borderRadius: "15px",
+              boxShadow: "0px 2px 8px rgba(0,0,0,0.32)",
+              maxWidth: "280px",
+            },
+          }
+        );
         showResults(true);
       } else {
-        console.error("Failed to calculate calories");
+        toast.error("Failed to calculate calories", {
+          style: {
+            background: theme.element,
+            color: theme.text_plain,
+            borderRadius: "15px",
+          },
+        });
       }
-    } catch (error) {
-      console.error("Error calculating calories:", error);
+    } catch (err) {
+      toast.error("Network error occurred", {
+        style: {
+          background: theme.element,
+          color: theme.text_plain,
+          borderRadius: "15px",
+        },
+      });
     }
   };
 
   return (
     <>
-      <div className="container">
-        <div
-          className="screen-element"
-          style={{
-            backgroundColor: theme.element,
-          }}
-        >
-          <div className="calculator-main">
-            <h1
-              style={{
-                color: theme.text_plain,
-              }}
-            >
-              Tell me about your
-              <br />
-              last training session...
-            </h1>
-            <div className="inputs">
-              <div className="input-group">
-                <label style={{ color: theme.text_plain }}>
-                  How was your heart rate?
-                </label>
-                <div className="heart-rate-inputs">
-                  <input
-                    type="number"
-                    name="heart_max"
-                    placeholder="Max"
-                    value={workoutData.heart_max}
-                    onChange={handleInputChange}
-                    style={{
-                      backgroundColor: theme.interactable,
-                      color: theme.text,
-                      border: "1px solid " + theme.border,
-                    }}
-                  />
-                  <input
-                    type="number"
-                    name="heart_avg"
-                    placeholder="Average"
-                    value={workoutData.heart_avg}
-                    onChange={handleInputChange}
-                    style={{
-                      backgroundColor: theme.interactable,
-                      color: theme.text,
-                      border: "1px solid " + theme.border,
-                    }}
-                  />
-                  <input
-                    type="number"
-                    name="heart_rest"
-                    placeholder="Rest"
-                    value={workoutData.heart_rest}
-                    onChange={handleInputChange}
-                    style={{
-                      backgroundColor: theme.interactable,
-                      color: theme.text,
-                      border: "1px solid " + theme.border,
-                    }}
-                  />
-                </div>
-              </div>
-
-              <div className="input-group">
-                <label style={{ color: theme.text_plain }}>
-                  What kind of workout did you do?
-                </label>
-                <select
-                  name="workout_type"
-                  className="workout-select"
-                  value={workoutData.workout_type}
-                  onChange={handleInputChange}
-                  style={{
-                    backgroundColor: theme.interactable,
-                    color: theme.text,
-                    border: "1px solid " + theme.border,
-                  }}
-                >
-                  {/* this we drag out the database most likely */}
-                  <option value="">Select workout type</option>
-                  <option value="Strength">Strength</option>
-                  <option value="HIIT">HIIT</option>
-                  <option value="Yoga">Yoga</option>
-                  <option value="Cardio">Cardio</option>
-                </select>
-              </div>
-
-              <div className="input-group length">
-                <label style={{ color: theme.text_plain }}>
-                  How long was your session?
-                </label>
+      <div
+        className="screen-element"
+        style={{
+          backgroundColor: theme.element,
+        }}
+      >
+        <div className="calculator-main">
+          <h1
+            style={{
+              color: theme.text_plain,
+            }}
+          >
+            Tell me about your
+            <br />
+            last training session...
+          </h1>
+          <div className="inputs">
+            <div className="input-group">
+              <label style={{ color: theme.text_plain }}>
+                How was your heart rate?
+              </label>
+              <div className="heart-rate-inputs">
                 <input
                   type="number"
-                  name="duration"
-                  className="timer-input"
-                  value={workoutData.duration}
+                  name="heart_max"
+                  placeholder="Max"
+                  value={workoutData.heart_max}
                   onChange={handleInputChange}
                   style={{
                     backgroundColor: theme.interactable,
                     color: theme.text,
-                    border: "1px solid " + theme.border,
+                    transition: "all 0.3s ease",
+                    outline: "none",
                   }}
                 />
-              </div>
-
-              <div className="input-group water">
-                <label style={{ color: theme.text_plain }}>
-                  How much water did you drink?
-                </label>
                 <input
                   type="number"
-                  name="water_intake"
-                  className="water-input"
-                  placeholder="Water in liters"
-                  value={workoutData.water_intake}
+                  name="heart_avg"
+                  placeholder="Average"
+                  value={workoutData.heart_avg}
                   onChange={handleInputChange}
                   style={{
                     backgroundColor: theme.interactable,
                     color: theme.text,
-                    border: "1px solid " + theme.border,
+                    transition: "all 0.3s ease",
+                    outline: "none",
+                  }}
+                />
+                <input
+                  type="number"
+                  name="heart_rest"
+                  placeholder="Rest"
+                  value={workoutData.heart_rest}
+                  onChange={handleInputChange}
+                  style={{
+                    backgroundColor: theme.interactable,
+                    color: theme.text,
+                    transition: "all 0.3s ease",
+                    outline: "none",
                   }}
                 />
               </div>
             </div>
-          </div>
-          <div className="calculator-footer">
-            <div className={`results results${results ? "-show" : ""}`}>
-              <h3
-                style={{
+
+            <div className="input-group">
+              <label style={{ color: theme.text_plain }}>
+                What kind of workout did you do?
+              </label>
+              <Select
+                name="workout_type"
+                className="workout-select"
+                value={workoutData.workout_type}
+                onChange={handleInputChange}
+                sx={{
+                  backgroundColor: theme.interactable,
                   color: theme.text_plain,
+                  fontWeight: "bold",
+                  transition: "all 0.3s ease",
+                  borderRadius: "15px",
+                  outline: "none",
+                  "& .MuiSelect-select": {
+                    padding: "10px",
+                    color: theme.text,
+                  },
+                  "& .MuiMenuItem-root": {
+                    backgroundColor: theme.background,
+                    color: theme.text,
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    border: "none",
+                  },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "none",
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    border: "none",
+                  },
+                }}
+                MenuProps={{
+                  PaperProps: {
+                    sx: {
+                      bgcolor: theme.interactable,
+                      borderRadius: "15px",
+                      "& .MuiMenuItem-root": {
+                        color: theme.text,
+                      },
+                      "& .MuiMenuItem-root:hover": {
+                        bgcolor: theme.interactable,
+                      },
+                    },
+                  },
                 }}
               >
-                Congratulations on your workout,
-                <br />
-                today you burned this many calories:
-                <br />
-                <p
-                  className="results-span"
+                <MenuItem value="Select workout type">
+                  Select workout type
+                </MenuItem>
+                <MenuItem value="Strength">Strength</MenuItem>
+                <MenuItem value="HIIT">HIIT</MenuItem>
+                <MenuItem value="Yoga">Yoga</MenuItem>
+                <MenuItem value="Cardio">Cardio</MenuItem>
+              </Select>
+            </div>
+
+            <div className="input-group">
+              <label style={{ color: theme.text_plain }}>
+                How long was your session?
+              </label>
+              <div className="duration-inputs">
+                <input
+                  type="number"
+                  name="duration_hours"
+                  placeholder="Hours"
+                  min="0"
+                  max="24"
+                  value={workoutData.duration_hours}
+                  onChange={(e) => {
+                    const hours = parseInt(e.target.value) || 0;
+                    const minutes = workoutData.duration_minutes;
+                    const duration = hours + minutes / 60;
+                    setWorkoutData((prev) => ({
+                      ...prev,
+                      duration_hours: hours,
+                      duration: duration,
+                    }));
+                  }}
                   style={{
                     backgroundColor: theme.interactable,
                     color: theme.text,
-                    fontWeight: 100,
+                    transition: "all 0.3s ease",
+                    outline: "none",
                   }}
-                >
-                  {caloriesBurned + " kcal"}
-                </p>
-              </h3>
+                />
+                <input
+                  type="number"
+                  name="duration_minutes"
+                  placeholder="Minutes"
+                  min="0"
+                  max="59"
+                  value={workoutData.duration_minutes}
+                  onChange={(e) => {
+                    const minutes = parseInt(e.target.value) || 0;
+                    const hours = workoutData.duration_hours;
+                    const duration = hours + minutes / 60;
+                    setWorkoutData((prev) => ({
+                      ...prev,
+                      duration_minutes: minutes,
+                      duration: duration,
+                    }));
+                  }}
+                  style={{
+                    backgroundColor: theme.interactable,
+                    color: theme.text,
+                    transition: "all 0.3s ease",
+                    outline: "none",
+                  }}
+                />
+              </div>
             </div>
-            <button
-              className="button button-submit"
-              style={{
-                backgroundColor: theme.interactable,
-                color: theme.text,
-                border: theme.border,
-              }}
-              onClick={() => {
-                if (results) {
-                  showResults(false);
-                  setWorkoutData({
-                    heart_max: 0,
-                    heart_avg: 0,
-                    heart_rest: 0,
-                    workout_type: "",
-                    duration: "00:00",
-                    water_intake: 0,
-                  });
-                } else {
-                  calculateCalories();
-                }
-              }}
-            >
-              {results ? "Next session" : "Conclude my session"}
-            </button>
+
+            <div className="input-group">
+              <label style={{ color: theme.text_plain }}>
+                How much water did you drink?
+              </label>
+              <input
+                type="number"
+                name="water_intake"
+                className="water-input"
+                placeholder="Water in liters"
+                value={workoutData.water_intake}
+                onChange={handleInputChange}
+                style={{
+                  backgroundColor: theme.interactable,
+                  color: theme.text,
+                  transition: "all 0.3s ease",
+                  outline: "none",
+                }}
+              />
+            </div>
           </div>
+        </div>
+        <div className="calculator-footer">
+          <button
+            className="button button-submit"
+            style={{
+              backgroundColor: theme.interactable,
+              color: theme.text,
+              border: theme.border,
+            }}
+            onClick={() => {
+              if (results) {
+                showResults(false);
+                setWorkoutData({
+                  heart_max: 0,
+                  heart_avg: 0,
+                  heart_rest: 0,
+                  workout_type: "Select workout type",
+                  duration_hours: 0,
+                  duration_minutes: 0,
+                  duration: 0,
+                  water_intake: 0,
+                });
+              } else {
+                calculateCalories();
+              }
+            }}
+          >
+            {results ? "Next session" : "Conclude my session"}
+          </button>
         </div>
       </div>
     </>

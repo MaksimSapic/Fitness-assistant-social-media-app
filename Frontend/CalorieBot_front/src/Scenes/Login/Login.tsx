@@ -48,33 +48,39 @@ function Login() {
             backgroundColor: theme.element,
           }}
         >
-          <h1>Welcome back </h1>
+          <h1 style={{ color: theme.text_plain }}>Welcome to CalorieBot </h1>
           {error && <div className="error-message">{error}</div>}
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <input
                 type="text"
                 placeholder="Username"
-                className="input"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
+                style={{ 
+                  backgroundColor: theme.interactable,
+                  color:theme.text_plain
+                 }}
               />
             </div>
             <div className="form-group">
               <input
                 type="password"
                 placeholder="Password"
-                className="input"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                style={{ 
+                  backgroundColor: theme.interactable,
+                  color:theme.text_plain
+                 }}
                 required
               />
             </div>
             <a
               href="#"
               className="forgotpassword"
-              style={{ color: theme.text }}
+              style={{ color: theme.text_plain }}
             >
               Forgotten password?
             </a>
@@ -83,7 +89,10 @@ function Login() {
             <button
               type="submit"
               className="button button-login"
-              style={{ backgroundColor: theme.interactable }}
+              style={{ 
+                    backgroundColor: theme.interactable,
+                    color:theme.text
+                   }}
             >
               Login
             </button>
@@ -92,8 +101,7 @@ function Login() {
               to="/register"
               className="register"
               style={{
-                backgroundColor: theme.interactable,
-                color: theme.text,
+                color: theme.text_plain,
               }}
             >
               Register now!

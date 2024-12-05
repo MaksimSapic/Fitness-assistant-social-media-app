@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useTheme } from "../../Theme/Theme";
 import config from "../../config";
 import "./Register.css";
+import Select from "@mui/material/Select";
+import { MenuItem } from "@mui/material";
 
 function Register() {
   const { theme } = useTheme();
@@ -25,19 +27,26 @@ function Register() {
     experience_level: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleNext = () => {
     if (step === 1) {
       // Validate first step
-      if (!formData.username || !formData.email || !formData.password || 
-          !formData.first_name || !formData.last_name) {
+      if (
+        !formData.username ||
+        !formData.email ||
+        !formData.password ||
+        !formData.first_name ||
+        !formData.last_name
+      ) {
         setError("Please fill in all fields");
         return;
       }
@@ -78,16 +87,16 @@ function Register() {
 
   return (
     <div className="register-container">
-      <div 
+      <div
         className="screen-element register-box"
         style={{ backgroundColor: theme.element }}
       >
         <h1 style={{ color: theme.text }}>
           {step === 1 ? "Create Account" : "Physical Information"}
         </h1>
-        
+
         {error && <div className="error-message">{error}</div>}
-        
+
         <form onSubmit={handleSubmit}>
           {step === 1 ? (
             // Step 1: Account Information
@@ -99,8 +108,11 @@ function Register() {
                   placeholder="Username"
                   value={formData.username}
                   onChange={handleChange}
-                  className="input"
                   required
+                  style={{
+                    backgroundColor: theme.interactable,
+                    color: theme.text_plain,
+                  }}
                 />
               </div>
 
@@ -111,8 +123,11 @@ function Register() {
                   placeholder="Email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="input"
                   required
+                  style={{
+                    backgroundColor: theme.interactable,
+                    color: theme.text_plain,
+                  }}
                 />
               </div>
 
@@ -123,8 +138,11 @@ function Register() {
                   placeholder="Password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="input"
                   required
+                  style={{
+                    backgroundColor: theme.interactable,
+                    color: theme.text_plain,
+                  }}
                 />
               </div>
 
@@ -135,8 +153,11 @@ function Register() {
                   placeholder="First Name"
                   value={formData.first_name}
                   onChange={handleChange}
-                  className="input"
                   required
+                  style={{
+                    backgroundColor: theme.interactable,
+                    color: theme.text_plain,
+                  }}
                 />
               </div>
 
@@ -147,8 +168,11 @@ function Register() {
                   placeholder="Last Name"
                   value={formData.last_name}
                   onChange={handleChange}
-                  className="input"
                   required
+                  style={{
+                    backgroundColor: theme.interactable,
+                    color: theme.text_plain,
+                  }}
                 />
               </div>
 
@@ -156,7 +180,10 @@ function Register() {
                 type="button"
                 className="button button-next"
                 onClick={handleNext}
-                style={{ backgroundColor: theme.interactable }}
+                style={{
+                  backgroundColor: theme.interactable,
+                  color: theme.text,
+                }}
               >
                 Next
               </button>
@@ -174,8 +201,11 @@ function Register() {
                   min="20"
                   max="300"
                   step="0.1"
-                  className="input"
                   required
+                  style={{
+                    backgroundColor: theme.interactable,
+                    color: theme.text_plain,
+                  }}
                 />
               </div>
 
@@ -189,24 +219,65 @@ function Register() {
                   min="0.5"
                   max="3"
                   step="0.01"
-                  className="input"
                   required
+                  style={{
+                    backgroundColor: theme.interactable,
+                    color: theme.text_plain,
+                  }}
                 />
               </div>
 
               <div className="form-group">
-                <select
+                <Select
                   name="gender"
                   value={formData.gender}
                   onChange={handleChange}
-                  className="input"
                   required
+                  sx={{
+                    backgroundColor: theme.interactable,
+                    color: theme.text_plain,
+                    fontWeight: "bold",
+                    transition: "all 0.3s ease",
+                    borderRadius: "15px",
+                    outline: "none",
+                    "& .MuiSelect-select": {
+                      padding: "10px",
+                      color: theme.text,
+                    },
+                    "& .MuiMenuItem-root": {
+                      backgroundColor: theme.background,
+                      color: theme.text,
+                    },
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      border: "none",
+                    },
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      border: "none",
+                    },
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      border: "none",
+                    },
+                  }}
+                  MenuProps={{
+                    PaperProps: {
+                      sx: {
+                        bgcolor: theme.interactable,
+                        borderRadius: "15px",
+                        "& .MuiMenuItem-root": {
+                          color: theme.text,
+                        },
+                        "& .MuiMenuItem-root:hover": {
+                          bgcolor: theme.interactable,
+                        },
+                      },
+                    },
+                  }}
                 >
-                  <option value="">Select Gender</option>
-                  <option value="M">Male</option>
-                  <option value="F">Female</option>
-                  <option value="O">Other</option>
-                </select>
+                  <MenuItem value="">Select Gender</MenuItem>
+                  <MenuItem value="M">Male</MenuItem>
+                  <MenuItem value="F">Female</MenuItem>
+                  <MenuItem value="O">Other</MenuItem>
+                </Select>
               </div>
 
               <div className="form-group">
@@ -218,8 +289,11 @@ function Register() {
                   onChange={handleChange}
                   min="13"
                   max="120"
-                  className="input"
                   required
+                  style={{
+                    backgroundColor: theme.interactable,
+                    color: theme.text_plain,
+                  }}
                 />
               </div>
 
@@ -233,8 +307,11 @@ function Register() {
                   min="2"
                   max="70"
                   step="0.1"
-                  className="input"
                   required
+                  style={{
+                    backgroundColor: theme.interactable,
+                    color: theme.text_plain,
+                  }}
                 />
               </div>
 
@@ -247,8 +324,11 @@ function Register() {
                   onChange={handleChange}
                   min="1"
                   max="5"
-                  className="input"
                   required
+                  style={{
+                    backgroundColor: theme.interactable,
+                    color: theme.text_plain,
+                  }}
                 />
               </div>
 
@@ -261,8 +341,11 @@ function Register() {
                   onChange={handleChange}
                   min="1"
                   max="10"
-                  className="input"
                   required
+                  style={{
+                    backgroundColor: theme.interactable,
+                    color: theme.text_plain,
+                  }}
                 />
               </div>
 
@@ -271,14 +354,20 @@ function Register() {
                   type="button"
                   className="button button-back"
                   onClick={handleBack}
-                  style={{ backgroundColor: theme.interactable }}
+                  style={{
+                    backgroundColor: theme.interactable,
+                    color: theme.text_plain,
+                  }}
                 >
                   Back
                 </button>
                 <button
                   type="submit"
                   className="button button-register"
-                  style={{ backgroundColor: theme.interactable }}
+                  style={{
+                    backgroundColor: theme.interactable,
+                    color: theme.text_plain,
+                  }}
                 >
                   Register
                 </button>
@@ -287,11 +376,7 @@ function Register() {
           )}
         </form>
 
-        <Link
-          to="/login"
-          className="login-link"
-          style={{ color: theme.text }}
-        >
+        <Link to="/login" className="login-link" style={{ color: theme.text }}>
           Already have an account? Login
         </Link>
       </div>
