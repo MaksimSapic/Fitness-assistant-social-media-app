@@ -10,10 +10,16 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import MockData from "./MockData";
 
-function ChardCard() {
-  const { theme, toggleTheme } = useTheme();
+interface CalorieBurnProps {
+  Cdata: {
+    date: string;
+    calories_burned: number;
+  }[];
+}
+
+function ChartCard({ Cdata }: CalorieBurnProps) {
+  const { theme } = useTheme();
   return (
     <>
       <div
@@ -46,7 +52,7 @@ function ChardCard() {
           >
             <ResponsiveContainer>
               <LineChart
-                data={MockData}
+                data={Cdata}
                 style={{
                   backgroundColor: theme.background,
                   borderRadius: 15,
@@ -54,10 +60,10 @@ function ChardCard() {
                 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
+                <XAxis dataKey="date" />
                 <YAxis />
                 <Tooltip />
-                <Line type="monotone" dataKey="pv" stroke="#8884d8" />
+                <Line type="monotone" dataKey="calories_burned" stroke="#8884d8" />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -67,4 +73,4 @@ function ChardCard() {
   );
 }
 
-export default ChardCard;
+export default ChartCard;

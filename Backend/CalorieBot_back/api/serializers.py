@@ -11,9 +11,10 @@ class UserSerializer(serializers.ModelSerializer):
             'id', 'username', 'email', 'first_name', 'last_name', 
             'password', 'weight', 'height', 'gender', 'age', 
             'fat_percentage', 'workout_frequency', 'bmi', 
-            'experience_level'
+            'experience_level', 'preferred_theme', 'followers_count',
+            'following_count', 'posts_count', 'biography', 'profile_picture'
         )
-        read_only_fields = ('id', 'bmi')
+        read_only_fields = ('id', 'bmi', 'followers_count', 'following_count', 'posts_count')
 
     def create(self, validated_data):
         password = validated_data.pop('password')

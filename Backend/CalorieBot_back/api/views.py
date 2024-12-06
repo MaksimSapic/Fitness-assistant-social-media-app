@@ -8,7 +8,8 @@ from rest_framework.decorators import api_view
 from .models import User, WorkoutSession
 from .serializers import UserSerializer, WorkoutSessionSerializer
 import pickle
-
+from django.db.models import Sum, Avg
+import math as m
 model_path = os.path.join(settings.BASE_DIR, 'AI_model', 'model.pkl')
 
 @api_view(['POST'])
@@ -93,3 +94,60 @@ def calculate_calories(request):
         return Response({
             'error': str(e)
         }, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def get_user_statistics(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+        workouts = WorkoutSession.objects.filter(user=user).order_by('-created_at')[:20]
+        
+        # Calculate summary statistics
+        summary = {
+            'total_workouts': workouts.count(),
+            'total_calories': workouts.aggregate(Sum('calories_burned'))['calories_burned__sum'] or 0,
+            'avg_duration': workouts.aggregate(Avg('session_duration'))['session_duration__avg'] or 0,
+            'avg_heart_rate': workouts.aggregate(Avg('heart_avg'))['heart_avg__avg'] or 0,
+        }
+        
+        # Prepare chart data
+        calorie_burn = [
+            {
+                'date': workout.created_at.strftime('%Y-%m-%d'),
+                'calories_burned': round(workout.calories_burned,4)
+            } for workout in workouts
+        ]
+        
+        duration_water = [
+            {
+                'date': workout.created_at.strftime('%Y-%m-%d'),
+                'duration': round(workout.session_duration,4),
+                'water': round(workout.water_intake,4)
+            } for workout in workouts
+        ]
+        
+        # Count workout types
+        workout_types = {}
+        for workout in workouts:
+            workout_types[workout.workout_type] = workout_types.get(workout.workout_type, 0) + 1
+            
+        workout_counts = [
+            {'workout_type': wtype, 'count': count}
+            for wtype, count in workout_types.items()
+        ]
+        
+        response_data = {
+            'summary': summary,
+            'recent_workouts': WorkoutSessionSerializer(workouts, many=True).data,
+            'chart_data': {
+                'calorie_burn': calorie_burn,
+                'duration_water': duration_water,
+                'workout_counts': workout_counts
+            }
+        }
+        
+        return Response(response_data, status=status.HTTP_200_OK)
+        
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)

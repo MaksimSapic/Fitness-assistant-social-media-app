@@ -15,6 +15,18 @@ class User(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
+    # Theme preference
+    preferred_theme = models.BooleanField(default=False)  # False for light, True for dark
+    
+    # Social stats
+    followers_count = models.PositiveIntegerField(default=0)
+    following_count = models.PositiveIntegerField(default=0)
+    posts_count = models.PositiveIntegerField(default=0)
+    
+    # Profile info
+    biography = models.TextField(max_length=500, blank=True)
+    profile_picture = models.URLField(max_length=300, blank=True)
+    
     # New fields
     GENDER_CHOICES = [
         ('M', 'Male'),

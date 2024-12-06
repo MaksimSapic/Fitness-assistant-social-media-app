@@ -11,7 +11,13 @@ import {
 import "./SurfaceChart.css";
 import data from "./MockData";
 import { useTheme } from "../../../Theme/Theme";
-function SurfaceChart() {
+interface SurfaceChartProps {
+  Sdata:{
+    duration:number,
+    water:number
+  }[]
+}
+function SurfaceChart({Sdata}:SurfaceChartProps) {
   const { theme, toggleTheme } = useTheme();
   return (
     <>
@@ -44,7 +50,7 @@ function SurfaceChart() {
           >
             <ResponsiveContainer>
               <AreaChart
-                data={data}
+                data={Sdata}
                 style={{
                   backgroundColor: theme.background,
                   borderRadius: 15,
@@ -61,7 +67,7 @@ function SurfaceChart() {
                     <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <XAxis dataKey="name" />
+                <XAxis dataKey="date" />
                 <YAxis />
                 <CartesianGrid strokeDasharray="3 3" />
                 <Tooltip />
@@ -73,14 +79,14 @@ function SurfaceChart() {
                 />
                 <Area
                   type="monotone"
-                  dataKey="uv"
+                  dataKey="duration"
                   stroke="#8884d8"
                   fillOpacity={1}
                   fill="url(#colorUv)"
                 />
                 <Area
                   type="monotone"
-                  dataKey="pv"
+                  dataKey="water"
                   stroke="#82ca9d"
                   fillOpacity={1}
                   fill="url(#colorPv)"

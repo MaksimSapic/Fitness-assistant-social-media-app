@@ -23,14 +23,14 @@ function Calculator() {
   var user: any = null;
   if (userdata) user = JSON.parse(userdata);
   const [workoutData, setWorkoutData] = useState<WorkoutData>({
-    heart_max: 0,
-    heart_avg: 0,
-    heart_rest: 0,
+    heart_max: NaN,
+    heart_avg: NaN,
+    heart_rest: NaN,
     workout_type: "Select workout type",
-    duration_hours: 0,
-    duration_minutes: 0,
+    duration_hours: NaN,
+    duration_minutes: NaN,
     duration: 0,
-    water_intake: 0,
+    water_intake: NaN,
   });
 
   const handleInputChange = (
@@ -220,7 +220,7 @@ function Calculator() {
                   type="number"
                   name="heart_max"
                   placeholder="Max"
-                  value={workoutData.heart_max}
+                  value={isNaN(workoutData.heart_max) ? "" : workoutData.heart_max}
                   onChange={handleInputChange}
                   style={{
                     backgroundColor: theme.interactable,
@@ -233,7 +233,7 @@ function Calculator() {
                   type="number"
                   name="heart_avg"
                   placeholder="Average"
-                  value={workoutData.heart_avg}
+                  value={isNaN(workoutData.heart_avg) ? "" : workoutData.heart_avg}
                   onChange={handleInputChange}
                   style={{
                     backgroundColor: theme.interactable,
@@ -246,7 +246,7 @@ function Calculator() {
                   type="number"
                   name="heart_rest"
                   placeholder="Rest"
-                  value={workoutData.heart_rest}
+                  value={isNaN(workoutData.heart_rest) ? "" : workoutData.heart_rest}
                   onChange={handleInputChange}
                   style={{
                     backgroundColor: theme.interactable,
@@ -328,11 +328,11 @@ function Calculator() {
                   placeholder="Hours"
                   min="0"
                   max="24"
-                  value={workoutData.duration_hours}
+                  value={isNaN(workoutData.duration_hours) ? "" : workoutData.duration_hours}
                   onChange={(e) => {
-                    const hours = parseInt(e.target.value) || 0;
-                    const minutes = workoutData.duration_minutes;
-                    const duration = hours + minutes / 60;
+                    const hours = e.target.value === "" ? NaN : parseInt(e.target.value);
+                    const minutes = isNaN(workoutData.duration_minutes) ? 0 : workoutData.duration_minutes;
+                    const duration = (isNaN(hours) ? 0 : hours) + minutes / 60;
                     setWorkoutData((prev) => ({
                       ...prev,
                       duration_hours: hours,
@@ -352,11 +352,11 @@ function Calculator() {
                   placeholder="Minutes"
                   min="0"
                   max="59"
-                  value={workoutData.duration_minutes}
+                  value={isNaN(workoutData.duration_minutes) ? "" : workoutData.duration_minutes}
                   onChange={(e) => {
-                    const minutes = parseInt(e.target.value) || 0;
-                    const hours = workoutData.duration_hours;
-                    const duration = hours + minutes / 60;
+                    const minutes = e.target.value === "" ? NaN : parseInt(e.target.value);
+                    const hours = isNaN(workoutData.duration_hours) ? 0 : workoutData.duration_hours;
+                    const duration = hours + (isNaN(minutes) ? 0 : minutes) / 60;
                     setWorkoutData((prev) => ({
                       ...prev,
                       duration_minutes: minutes,
@@ -382,7 +382,7 @@ function Calculator() {
                 name="water_intake"
                 className="water-input"
                 placeholder="Water in liters"
-                value={workoutData.water_intake}
+                value={isNaN(workoutData.water_intake) ? "" : workoutData.water_intake}
                 onChange={handleInputChange}
                 style={{
                   backgroundColor: theme.interactable,
@@ -410,8 +410,8 @@ function Calculator() {
                   heart_avg: 0,
                   heart_rest: 0,
                   workout_type: "Select workout type",
-                  duration_hours: 0,
-                  duration_minutes: 0,
+                  duration_hours: NaN,
+                  duration_minutes: NaN,
                   duration: 0,
                   water_intake: 0,
                 });
