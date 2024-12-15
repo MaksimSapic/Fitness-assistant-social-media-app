@@ -4,6 +4,7 @@ import "./Calculator.css";
 import config from "../../config";
 import { Select, MenuItem } from "@mui/material";
 import { toast } from "react-hot-toast";
+import { authenticatedFetch } from '../../utils/api';
 
 interface WorkoutData {
   heart_max: number;
@@ -112,11 +113,8 @@ function Calculator() {
 
     // If all validations pass, proceed with the API call
     try {
-      const response = await fetch(`${config.url}api/calculate-calories/`, {
+      const response = await authenticatedFetch(`${config.url}api/calculate-calories/`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({
           session: {
             id: user.id,
@@ -138,8 +136,8 @@ function Calculator() {
         }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
+      if (response?.ok) {
+        const data = await response?.json();
         toast.success(
           <div>
             <h2

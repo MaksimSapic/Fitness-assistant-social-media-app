@@ -23,6 +23,7 @@ function App() {
       <Router>
         <Routes>
           {/* Public route */}
+          <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
@@ -36,7 +37,7 @@ function App() {
                 </>
               }
             >
-              <Route path="/" element={<Home />} />
+              <Route path="/home" element={<Home />} />
               <Route path="/news" element={<News />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/settings" element={<Settings />} />

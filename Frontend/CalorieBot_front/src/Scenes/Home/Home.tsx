@@ -4,11 +4,26 @@ import PieChartCard from "../../Components/ChartCard/PieChartCard/PieChartCard";
 import SurfaceChart from "../../Components/ChartCard/SurfaceChart/SurfaceChart";
 import "./Home.css";
 import { useWorkoutStats, WorkoutStats } from "../../Hooks/useWorkoutStats";
+import { useEffect } from "react";
 
 function Home() {
-  const user: any = localStorage.getItem("user");
-  const userdata: any = user ? JSON.parse(user) : null;
-  const data = useWorkoutStats(userdata.id);
+  const userString = localStorage.getItem("user");
+  const tokensString = localStorage.getItem("tokens");
+  
+  useEffect(() => {
+    if (!userString || !tokensString) {
+      console.error("Missing user data or tokens");
+      window.location.href = '/login';
+      return;
+    }
+    
+    const userdata = JSON.parse(userString);
+    console.log("User ID:", userdata.id);
+    console.log("Tokens present:", !!tokensString);
+  }, [userString, tokensString]);
+
+  const userdata = userString ? JSON.parse(userString) : null;
+  const { stats, loading, error } = useWorkoutStats(userdata?.id);
 
   // Provide empty arrays as fallbacks when data is undefined
   const defaultData = {
@@ -17,7 +32,7 @@ function Home() {
     duration_water: []
   };
 
-  const chartData = data.stats?.chart_data || defaultData;
+  const chartData = stats?.chart_data || defaultData;
 
   return (
     <>

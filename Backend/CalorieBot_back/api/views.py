@@ -4,12 +4,14 @@ from django.shortcuts import render
 import pandas as pd
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from .models import User, WorkoutSession
 from .serializers import UserSerializer, WorkoutSessionSerializer
 import pickle
 from django.db.models import Sum, Avg
 import math as m
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated
 model_path = os.path.join(settings.BASE_DIR, 'AI_model', 'model.pkl')
 
 @api_view(['POST'])
@@ -28,8 +30,15 @@ def login_user(request):
     try:
         user = User.objects.get(username=username)
         if user.check_password(password):
+            refresh = RefreshToken.for_user(user)
             serializer = UserSerializer(user)
-            return Response(serializer.data)
+            return Response({
+                'user': serializer.data,
+                'tokens': {
+                    'access': str(refresh.access_token),
+                    'refresh': str(refresh)
+                }
+            })
         else:
             return Response({'error': 'Invalid credentials'}, 
                           status=status.HTTP_401_UNAUTHORIZED)
@@ -38,6 +47,7 @@ def login_user(request):
                        status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def calculate_calories(request):
     try:
         with open(model_path, 'rb') as f:
@@ -96,9 +106,23 @@ def calculate_calories(request):
         }, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_user_statistics(request, user_id):
+    
+    if not request.auth:
+        return Response(
+            {'error': 'No authentication token provided'}, 
+            status=status.HTTP_401_UNAUTHORIZED
+        )
+    
     try:
         user = User.objects.get(id=user_id)
+        if request.user != user:
+            return Response(
+                {'error': 'Not authorized to view this user\'s statistics'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+            
         workouts = WorkoutSession.objects.filter(user=user).order_by('-created_at')[:20]
         
         # Calculate summary statistics

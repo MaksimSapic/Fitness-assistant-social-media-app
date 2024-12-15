@@ -28,9 +28,10 @@ function Login() {
       const data = await response.json();
 
       if (response.ok) {
-        // Store user data in localStorage or state management solution
-        localStorage.setItem("user", JSON.stringify(data));
-        navigate("/"); // Redirect to home page
+        // Store user data and tokens
+        localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("tokens", JSON.stringify(data.tokens));
+        navigate("/home");
       } else {
         setError(data.error || "Login failed");
       }

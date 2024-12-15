@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import config from '../config';
+import { authenticatedFetch } from '../utils/api';
 
 export interface WorkoutSummary {
   total_workouts: number;
@@ -48,12 +49,14 @@ export const useWorkoutStats = (userId: number) => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch(`${config.url}api/user-statistics/${userId}/`);
-        if (!response.ok) {
+        const response = await authenticatedFetch(`${config.url}api/user-statistics/${userId}/`);
+        if (response && !response.ok) {
           throw new Error('Failed to fetch statistics');
         }
-        const data = await response.json();
-        setStats(data);
+        if (response) {
+          const data = await response.json();
+          setStats(data);
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
@@ -61,7 +64,9 @@ export const useWorkoutStats = (userId: number) => {
       }
     };
 
-    fetchStats();
+    if (userId) {
+      fetchStats();
+    }
   }, [userId]);
 
   return { stats, loading, error };

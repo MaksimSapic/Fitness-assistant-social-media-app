@@ -293,7 +293,7 @@ function Navbar() {
                 onClick={() => {
                   setSelected("Home");
                 }}
-                to="/"
+                to="/home"
               >
                 Home
               </Link>
