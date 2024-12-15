@@ -63,7 +63,11 @@ function ChartCard({ Cdata }: CalorieBurnProps) {
                 <XAxis dataKey="date" />
                 <YAxis />
                 <Tooltip />
-                <Line type="monotone" dataKey="calories_burned" stroke="#8884d8" />
+                <Line
+                  type="monotone"
+                  dataKey="calories_burned"
+                  stroke="#8884d8"
+                />
               </LineChart>
             </ResponsiveContainer>
           </div>

@@ -1,0 +1,9 @@
+.flex{
+    display: flex;
+}
+.posts{
+    width: 85%;
+}
+.sidebar{
+    width: 15%;
+}

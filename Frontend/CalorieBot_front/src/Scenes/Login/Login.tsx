@@ -58,10 +58,10 @@ function Login() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                style={{ 
+                style={{
                   backgroundColor: theme.interactable,
-                  color:theme.text_plain
-                 }}
+                  color: theme.text,
+                }}
               />
             </div>
             <div className="form-group">
@@ -70,10 +70,10 @@ function Login() {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                style={{ 
+                style={{
                   backgroundColor: theme.interactable,
-                  color:theme.text_plain
-                 }}
+                  color: theme.text,
+                }}
                 required
               />
             </div>
@@ -89,10 +89,10 @@ function Login() {
             <button
               type="submit"
               className="button button-login"
-              style={{ 
-                    backgroundColor: theme.interactable,
-                    color:theme.text
-                   }}
+              style={{
+                backgroundColor: theme.interactable,
+                color: theme.text,
+              }}
             >
               Login
             </button>
