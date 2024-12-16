@@ -205,19 +205,19 @@ function Navbar() {
         disablePortal
         keepMounted
       >
-        <MenuItem onClick={handleClose}>
-          <Avatar />
-          <Link
-            style={{ color: theme.text_plain }}
-            className="menu-link 1"
-            to="/profile"
-            onClick={() => {
-              setSelected("profile");
-            }}
-          >
+        <Link
+          style={{ color: theme.text_plain }}
+          className="menu-link 1"
+          to="/profile"
+          onClick={() => {
+            setSelected("profile");
+          }}
+        >
+          <MenuItem onClick={handleClose}>
+            <Avatar />
             My profile
-          </Link>
-        </MenuItem>
+          </MenuItem>
+        </Link>
         <Divider />
         <MenuItem onClick={handleClose}>
           <ListItemIcon>
@@ -275,9 +275,15 @@ function Navbar() {
         <h2
           className="nav-left"
           style={{ color: theme.text_plain, transition: "0.5s ease-in" }}
+          onClick={() => {
+            setSelected("Home");
+          }}
         >
-          CalorieBot
+          <Link to="/home" style={{ color: theme.text_plain }}>
+            CalorieBot
+          </Link>
         </h2>
+
         <div className="nav-right">
           <div className="options-buttons">
             <Tooltip title="Home">

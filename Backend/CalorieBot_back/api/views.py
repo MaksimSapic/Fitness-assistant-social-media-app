@@ -123,7 +123,7 @@ def get_user_statistics(request, user_id):
                 status=status.HTTP_403_FORBIDDEN
             )
             
-        workouts = WorkoutSession.objects.filter(user=user).order_by('-created_at')[:20]
+        workouts = WorkoutSession.objects.filter(user=user).order_by('created_at')[:20]
         
         # Calculate summary statistics
         summary = {

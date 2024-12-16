@@ -7,9 +7,7 @@ import { toast } from "react-hot-toast";
 import { authenticatedFetch } from '../../utils/api';
 
 interface WorkoutData {
-  heart_max: number;
   heart_avg: number;
-  heart_rest: number;
   workout_type: string;
   duration_hours: number;
   duration_minutes: number;
@@ -24,9 +22,7 @@ function Calculator() {
   var user: any = null;
   if (userdata) user = JSON.parse(userdata);
   const [workoutData, setWorkoutData] = useState<WorkoutData>({
-    heart_max: NaN,
     heart_avg: NaN,
-    heart_rest: NaN,
     workout_type: "Select workout type",
     duration_hours: NaN,
     duration_minutes: NaN,
@@ -83,9 +79,7 @@ function Calculator() {
     }
 
     if (
-      workoutData.heart_max <= 0 ||
-      workoutData.heart_avg <= 0 ||
-      workoutData.heart_rest <= 0
+      workoutData.heart_avg <= 0 
     ) {
       toast.error("Please enter all heart rate values", {
         style: {
@@ -96,21 +90,6 @@ function Calculator() {
       });
       return;
     }
-
-    if (
-      Number(workoutData.heart_max) <= Number(workoutData.heart_avg) ||
-      Number(workoutData.heart_avg) <= Number(workoutData.heart_rest)
-    ) {
-      toast.error("Invalid heart rate values. Max > Average > Rest", {
-        style: {
-          background: theme.element,
-          color: theme.text_plain,
-          borderRadius: "15px",
-        },
-      });
-      return;
-    }
-
     // If all validations pass, proceed with the API call
     try {
       const response = await authenticatedFetch(`${config.url}api/calculate-calories/`, {
@@ -127,8 +106,6 @@ function Calculator() {
             Workout_Type: workoutData.workout_type,
             Water_Intake: workoutData.water_intake,
             Avg_BPM: workoutData.heart_avg,
-            Max_BPM: workoutData.heart_max,
-            Rest_BPM: workoutData.heart_rest,
             Experience_level: user.experience_level,
             Workout_Frequency: user.workout_frequency,
             Height: user.height,
@@ -214,19 +191,7 @@ function Calculator() {
                 How was your heart rate?
               </label>
               <div className="heart-rate-inputs">
-                <input
-                  type="number"
-                  name="heart_max"
-                  placeholder="Max"
-                  value={isNaN(workoutData.heart_max) ? "" : workoutData.heart_max}
-                  onChange={handleInputChange}
-                  style={{
-                    backgroundColor: theme.interactable,
-                    color: theme.text,
-                    transition: "all 0.3s ease",
-                    outline: "none",
-                  }}
-                />
+                
                 <input
                   type="number"
                   name="heart_avg"
@@ -240,19 +205,7 @@ function Calculator() {
                     outline: "none",
                   }}
                 />
-                <input
-                  type="number"
-                  name="heart_rest"
-                  placeholder="Rest"
-                  value={isNaN(workoutData.heart_rest) ? "" : workoutData.heart_rest}
-                  onChange={handleInputChange}
-                  style={{
-                    backgroundColor: theme.interactable,
-                    color: theme.text,
-                    transition: "all 0.3s ease",
-                    outline: "none",
-                  }}
-                />
+              
               </div>
             </div>
 
@@ -404,9 +357,7 @@ function Calculator() {
               if (results) {
                 showResults(false);
                 setWorkoutData({
-                  heart_max: 0,
                   heart_avg: 0,
-                  heart_rest: 0,
                   workout_type: "Select workout type",
                   duration_hours: NaN,
                   duration_minutes: NaN,

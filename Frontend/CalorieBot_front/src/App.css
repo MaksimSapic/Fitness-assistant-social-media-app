@@ -93,10 +93,12 @@ button:hover {
   font-size: calc(0.7rem + 0.3vw);
 }
 .chart {
-  width: 95%;
+  width: 94%;
+  margin: calc(8px + 0.4vh);
 }
 .chart-mini {
-  width: 44%;
+  width: calc(47% - (16px + 0.8vh));
+  margin: calc(8px + 0.4vh);
   display: inline-flex;
   flex-direction: column;
   vertical-align: top;
