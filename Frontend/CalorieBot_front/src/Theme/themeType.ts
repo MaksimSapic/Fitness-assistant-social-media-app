@@ -20,4 +20,4 @@ export const darkTheme = {
   icon: palette.dark.icon[500],
 };
 
-export type ThemeType = typeof lightTheme;
+export type ThemeType = typeof darkTheme;

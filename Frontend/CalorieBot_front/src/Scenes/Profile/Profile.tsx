@@ -6,7 +6,6 @@ function Profile() {
   const { theme, toggleTheme } = useTheme();
   const data = localStorage.getItem("user");
   var userdata: user = data ? JSON.parse(data) : null;
-  console.log(userdata);
   return (
     <>
       <div className="wrap">
@@ -24,7 +23,10 @@ function Profile() {
           style={{
             backgroundColor: theme.element,
           }}
-        ></div>
+        >
+          <h2 style={{color:theme.text_plain}}>Your posts</h2>
+          
+        </div>
       </div>
     </>
   );

@@ -21,5 +21,4 @@ from api import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
-    path('calculate-calories/', views.calculate_calories, name='calculate-calories'),
 ]

@@ -57,6 +57,8 @@ select {
   padding: 5px;
   border-radius: 15px;
   font-size: calc(0.7rem + 0.7vw);
+  box-sizing: border-box;
+  max-width: 100%;
 }
 input:focus,
 select:focus,
@@ -111,4 +113,7 @@ input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+input::placeholder{
+  color:inherit
 }

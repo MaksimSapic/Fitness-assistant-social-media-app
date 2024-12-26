@@ -3,6 +3,7 @@ import hashlib
 import os
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.conf import settings
 
 class UserManager(BaseUserManager):
     def create_user(self, username, email, password=None, **extra_fields):
@@ -40,7 +41,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     following_count = models.PositiveIntegerField(default=0)
     posts_count = models.PositiveIntegerField(default=0)
     biography = models.TextField(blank=True)
-    profile_picture = models.URLField(blank=True)
+    profile_picture = models.BinaryField(null=True, blank=True)
+    profile_picture_type = models.CharField(max_length=100, null=True, blank=True)  # To store mime type
     weight = models.FloatField(validators=[MinValueValidator(20.0), MaxValueValidator(300.0)])
     height = models.FloatField(validators=[MinValueValidator(0.5), MaxValueValidator(3.0)])
     gender = models.CharField(max_length=1, choices=[('M', 'Male'), ('F', 'Female')])
@@ -74,8 +76,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 class WorkoutSession(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='workout_sessions')
     heart_avg = models.IntegerField()
-    heart_max = models.IntegerField()
-    heart_rest = models.IntegerField()
     workout_type = models.CharField(max_length=50)
     session_duration = models.FloatField()
     water_intake = models.FloatField()
@@ -88,3 +88,28 @@ class WorkoutSession(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s workout on {self.created_at}"
+
+class Post(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='posts')
+    title = models.CharField(max_length=255)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    likes_count = models.PositiveIntegerField(default=0)
+    comments_count = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['-created_at']
+
+class Comment(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class Attachment(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='attachments')
+    file = models.BinaryField()
+    file_name = models.CharField(max_length=255)
+    file_type = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)

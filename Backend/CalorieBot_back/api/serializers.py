@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, WorkoutSession
+from .models import User, WorkoutSession, Post, Comment, Attachment
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True)
@@ -31,7 +31,23 @@ class WorkoutSessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkoutSession
         fields = (
-            'id', 'heart_avg', 'heart_max', 'heart_rest', 
+            'id', 'heart_avg', 
             'workout_type', 'session_duration', 'water_intake', 
             'calories_burned', 'created_at'
         )
+
+class PostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ['id', 'user', 'title', 'content', 'created_at', 'likes_count', 'comments_count']
+        read_only_fields = ['user', 'likes_count', 'comments_count']
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['id', 'post', 'user', 'content', 'created_at']
+
+class AttachmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Attachment
+        fields = ['id', 'post', 'file', 'created_at']

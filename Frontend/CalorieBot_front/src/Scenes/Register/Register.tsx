@@ -20,7 +20,7 @@ function Register() {
     last_name: "",
     weight: "",
     height: "",
-    gender: "",
+    gender: "select gender",
     age: "",
     fat_percentage: "",
     workout_frequency: "",
@@ -236,6 +236,7 @@ function Register() {
                   sx={{
                     backgroundColor: theme.interactable,
                     color: theme.text_plain,
+                    width:"72%",
                     fontWeight: "bold",
                     transition: "all 0.3s ease",
                     borderRadius: "15px",

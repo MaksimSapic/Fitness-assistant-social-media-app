@@ -1,7 +1,7 @@
 import { useTheme } from "../../Theme/Theme";
 import "./Navbar.css";
-import { Link } from "react-router-dom";
-import { Fragment, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Fragment, useEffect, useState } from "react";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
@@ -17,15 +17,51 @@ import {
   ListItemIcon,
 } from "@mui/material";
 import { Settings, Logout } from "@mui/icons-material";
+import { authenticatedFetch } from "../../utils/api";
+import config from "../../config";
 
 function Navbar() {
   const { theme, toggleTheme } = useTheme();
-  const [selected, setSelected] = useState("Home");
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+
+  const location = useLocation();
+  const [selected, setSelected] = useState(() => {
+    const path = location.pathname;
+    if (path.includes("home")) return "Home";
+    if (path.includes("news")) return "News";
+    if (path.includes("profile")) return "Profile";
+    if (path.includes("settings")) return "Settings";
+    return "Home";
+  });
 
   const data = localStorage.getItem("user");
   const user = data ? JSON.parse(data) : null;
   const username = user ? user["first_name"] + " " + user["last_name"] : "";
   //mock data
+
+  useEffect(() => {
+    const fetchProfileImage = async () => {
+      try {
+        const response = await authenticatedFetch(
+          `${config.url}api/profile-picture/${user.id}`,
+          {
+            method: "GET",
+          }
+        );
+        if (response && response.ok) {
+          const blob = await response.blob();
+          const imageUrl = URL.createObjectURL(blob);
+          setProfileImage(imageUrl);
+        }
+      } catch (error) {
+        console.error("Error fetching profile picture:", error);
+      }
+    };
+
+    if (user.profile_picture) {
+      fetchProfileImage();
+    }
+  }, [user.id, user.profile_picture]);
   const notifications = [
     "make the login page",
     "backend is waiting",
@@ -50,9 +86,6 @@ function Navbar() {
     setOpenMenu(null);
     setAnchorEl(null);
   };
-  //
-
-  //notifications icon
   const notifs = (
     <>
       <Box
@@ -62,7 +95,6 @@ function Navbar() {
         <Tooltip title="notifications">
           <NotificationsNoneIcon
             style={{
-              // backgroundColor: theme.background,
               borderRadius: 90,
               transition: "0.5s ease-in",
               color: theme.icon,
@@ -146,7 +178,6 @@ function Navbar() {
         <Tooltip title={username}>
           <PersonOutlineIcon
             style={{
-              // backgroundColor: theme.background,
               borderRadius: 90,
               transition: "0.5s ease-in",
               color: theme.icon,
@@ -213,8 +244,16 @@ function Navbar() {
             setSelected("profile");
           }}
         >
-          <MenuItem onClick={handleClose}>
-            <Avatar />
+          <MenuItem onClick={handleClose} style={{ color: theme.text_plain }}>
+            {profileImage ? (
+              <img
+                className="profile-avatar"
+                src={profileImage}
+                alt="Profile"
+              />
+            ) : (
+              <Avatar />
+            )}
             My profile
           </MenuItem>
         </Link>

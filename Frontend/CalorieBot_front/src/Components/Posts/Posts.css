@@ -1,0 +1,7 @@
+@import "../../App.css";
+
+.post{
+    box-shadow: 0px 2px 8px rgba(29, 22, 22, 0.32);
+    padding: 1vw;
+    margin: 0.5vw;
+}

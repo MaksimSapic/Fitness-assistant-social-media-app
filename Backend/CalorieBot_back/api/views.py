@@ -5,13 +5,18 @@ import pandas as pd
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
-from .models import User, WorkoutSession
-from .serializers import UserSerializer, WorkoutSessionSerializer
+from .models import User, WorkoutSession, Post, Comment, Attachment
+from .serializers import UserSerializer, WorkoutSessionSerializer, PostSerializer, CommentSerializer, AttachmentSerializer
 import pickle
 from django.db.models import Sum, Avg
 import math as m
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from django.http import FileResponse
+from rest_framework import viewsets
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.decorators import action
+
 model_path = os.path.join(settings.BASE_DIR, 'AI_model', 'model.pkl')
 
 @api_view(['POST'])
@@ -49,6 +54,7 @@ def login_user(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def calculate_calories(request):
+    print(request.data)
     try:
         with open(model_path, 'rb') as f:
             model = pickle.load(f)
@@ -85,8 +91,6 @@ def calculate_calories(request):
         workout_session = WorkoutSession.objects.create(
             user=user,
             heart_avg=session_data['Avg_BPM'],
-            heart_max=session_data['Max_BPM'],
-            heart_rest=session_data['Rest_BPM'],
             workout_type=session_data['Workout_Type'],
             session_duration=session_data['Session_Duration'],
             water_intake=session_data['Water_Intake'],
@@ -175,3 +179,96 @@ def get_user_statistics(request, user_id):
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+# @api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+# def get_pfp(request, user_id):
+#     try:
+#         user = User.objects.get(id=user_id)
+#         if user.profile_picture:
+#             file_path = os.path.join(settings.MEDIA_ROOT, str(user.profile_picture))
+#             if os.path.exists(file_path):
+#                 return FileResponse(open(file_path, 'rb'), content_type='image/*')
+#     except Exception as e:
+#         return HttpResponse(status=404)
+
+class PostViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    parser_classes = (MultiPartParser, FormParser)
+    
+    def perform_create(self, serializer):
+        post = serializer.save(user=self.request.user)
+        if 'file' in self.request.FILES:
+            file_obj = self.request.FILES['file']
+            Attachment.objects.create(
+                post=post,
+                file=file_obj.read(),
+                file_name=file_obj.name,
+                file_type=file_obj.content_type
+            )
+
+    @action(detail=True, methods=['post'])
+    def like(self, request, pk=None):
+        post = self.get_object()
+        post.likes_count += 1
+        post.save()
+        return Response({'status': 'post liked'})
+
+    @action(detail=True, methods=['get'])
+    def attachments(self, request, pk=None):
+        post = self.get_object()
+        attachments = post.attachments.all()
+        serializer = AttachmentSerializer(attachments, many=True)
+        return Response(serializer.data)
+
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+
+class AttachmentViewSet(viewsets.ModelViewSet):
+    queryset = Attachment.objects.all()
+    serializer_class = AttachmentSerializer
+    permission_classes = [IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser)
+    
+    def perform_create(self, serializer):
+        file_obj = self.request.FILES['file']
+        file_content = file_obj.read()
+        serializer.save(
+            file=file_content,
+            file_name=file_obj.name,
+            file_type=file_obj.content_type
+        )
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def update_profile_picture(request):
+    try:
+        user = request.user
+        if 'profile_picture' in request.FILES:
+            file = request.FILES['profile_picture']
+            user.profile_picture = file.read()
+            user.profile_picture_type = file.content_type
+            user.save()
+            return Response({'message': 'Profile picture updated successfully'})
+        return Response({'error': 'No file provided'}, status=400)
+    except Exception as e:
+        return Response({'error': str(e)}, status=400)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_profile_picture(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+        if user.profile_picture:
+            return HttpResponse(
+                user.profile_picture,
+                content_type=user.profile_picture_type
+            )
+        return Response({'error': 'No profile picture found'}, status=404)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=404)
+
