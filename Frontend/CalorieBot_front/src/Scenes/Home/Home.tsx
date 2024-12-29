@@ -23,7 +23,7 @@ function Home() {
   }, [userString, tokensString]);
 
   const userdata = userString ? JSON.parse(userString) : null;
-  const { stats, loading, error } = useWorkoutStats(userdata?.id);
+  const { stats, loading, error, refreshStats } = useWorkoutStats(userdata?.id);
 
   // Provide empty arrays as fallbacks when data is undefined
   const defaultData = {
@@ -39,7 +39,7 @@ function Home() {
       <div className="wrapper">
         <div className="container">
           <div className="calculator">
-            <Calculator></Calculator>
+            <Calculator onWorkoutComplete={refreshStats} />
           </div>
           <div className="stats">
             <CalorieBurn Cdata={chartData.calorie_burn}></CalorieBurn>

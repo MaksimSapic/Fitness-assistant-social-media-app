@@ -20,4 +20,5 @@ export interface user {
 
   biography: string;
   profile_picture: string;
+  profile_avatar: string;
 }

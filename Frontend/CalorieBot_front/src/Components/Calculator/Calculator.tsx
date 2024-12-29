@@ -15,7 +15,11 @@ interface WorkoutData {
   water_intake: number;
 }
 
-function Calculator() {
+interface CalculatorProps {
+  onWorkoutComplete?: () => void;
+}
+
+function Calculator({ onWorkoutComplete }: CalculatorProps) {
   const { theme } = useTheme();
   const [results, showResults] = useState(false);
   const userdata = localStorage.getItem("user");
@@ -29,6 +33,7 @@ function Calculator() {
     duration: 0,
     water_intake: NaN,
   });
+  const [isCalculating, setIsCalculating] = useState(false);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -41,57 +46,58 @@ function Calculator() {
   };
 
   const calculateCalories = async () => {
-    // Validation checks
-    if (
-      !workoutData.workout_type ||
-      workoutData.workout_type === "Select workout type"
-    ) {
-      toast.error("Please select a workout type", {
-        style: {
-          background: theme.element,
-          color: theme.text_plain,
-          borderRadius: "15px",
-        },
-      });
-      return;
-    }
-
-    if (workoutData.duration <= 0) {
-      toast.error("Please enter a valid duration", {
-        style: {
-          background: theme.element,
-          color: theme.text_plain,
-          borderRadius: "15px",
-        },
-      });
-      return;
-    }
-
-    if (workoutData.water_intake < 0) {
-      toast.error("Please enter a valid water intake", {
-        style: {
-          background: theme.element,
-          color: theme.text_plain,
-          borderRadius: "15px",
-        },
-      });
-      return;
-    }
-
-    if (
-      workoutData.heart_avg <= 0 
-    ) {
-      toast.error("Please enter all heart rate values", {
-        style: {
-          background: theme.element,
-          color: theme.text_plain,
-          borderRadius: "15px",
-        },
-      });
-      return;
-    }
-    // If all validations pass, proceed with the API call
+    setIsCalculating(true);
     try {
+      // Validation checks
+      if (
+        !workoutData.workout_type ||
+        workoutData.workout_type === "Select workout type"
+      ) {
+        toast.error("Please select a workout type", {
+          style: {
+            background: theme.element,
+            color: theme.text_plain,
+            borderRadius: "15px",
+          },
+        });
+        return;
+      }
+
+      if (workoutData.duration <= 0) {
+        toast.error("Please enter a valid duration", {
+          style: {
+            background: theme.element,
+            color: theme.text_plain,
+            borderRadius: "15px",
+          },
+        });
+        return;
+      }
+
+      if (workoutData.water_intake < 0) {
+        toast.error("Please enter a valid water intake", {
+          style: {
+            background: theme.element,
+            color: theme.text_plain,
+            borderRadius: "15px",
+          },
+        });
+        return;
+      }
+
+      if (
+        workoutData.heart_avg <= 0 
+      ) {
+        toast.error("Please enter all heart rate values", {
+          style: {
+            background: theme.element,
+            color: theme.text_plain,
+            borderRadius: "15px",
+          },
+        });
+        return;
+      }
+      // If all validations pass, proceed with the API call
       const response = await authenticatedFetch(`${config.url}api/calculate-calories/`, {
         method: "POST",
         body: JSON.stringify({
@@ -147,6 +153,7 @@ function Calculator() {
           }
         );
         showResults(true);
+        onWorkoutComplete?.();
       } else {
         toast.error("Failed to calculate calories", {
           style: {
@@ -156,14 +163,16 @@ function Calculator() {
           },
         });
       }
-    } catch (err) {
-      toast.error("Network error occurred", {
+    } catch (error) {
+      toast.error("Error calculating calories", {
         style: {
           background: theme.element,
           color: theme.text_plain,
           borderRadius: "15px",
         },
       });
+    } finally {
+      setIsCalculating(false);
     }
   };
 

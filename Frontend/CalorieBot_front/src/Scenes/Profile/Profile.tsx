@@ -1,3 +1,4 @@
+import UserPosts from "../../Components/Posts/UserPosts";
 import ProfileCard from "../../Components/ProfileCard/ProfileCard";
 import { user } from "../../Models/user";
 import { useTheme } from "../../Theme/Theme";
@@ -18,14 +19,24 @@ function Profile() {
         >
           <ProfileCard user={userdata} />
         </div>
-        <div
-          className="screen-element my-posts"
-          style={{
-            backgroundColor: theme.element,
-          }}
-        >
-          <h2 style={{color:theme.text_plain}}>Your posts</h2>
-          
+        <div className="posts-insights">
+          <div
+            className="screen-element your-posts"
+            style={{
+              backgroundColor: theme.element,
+            }}
+          >
+            <h2 style={{ color: theme.text_plain }}>Your posts</h2>
+            <UserPosts />
+          </div>
+          <div
+            className="screen-element insights"
+            style={{
+              backgroundColor: theme.element,
+            }}
+          >
+            <h2 style={{ color: theme.text_plain }}>Insights</h2>
+          </div>
         </div>
       </div>
     </>

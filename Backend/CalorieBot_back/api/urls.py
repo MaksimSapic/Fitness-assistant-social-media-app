@@ -13,6 +13,8 @@ urlpatterns = [
     path('calculate-calories/', views.calculate_calories, name='calculate-calories'),
     path('user-statistics/<int:user_id>/', views.get_user_statistics, name='user-statistics'),
     path('profile-picture/', views.update_profile_picture, name='update_profile_picture'),
+    path('profile-picture-delete/<int:user_id>/', views.delete_profile_picture, name='delete_profile_picture'),
     path('profile-picture/<int:user_id>/', views.get_profile_picture, name='get_profile_picture'),
+    path('profile-picture-avatar/<int:user_id>/', views.get_profile_picture, name='get_profile_picture-avatar'),
     path('', include(router.urls)),
 ]

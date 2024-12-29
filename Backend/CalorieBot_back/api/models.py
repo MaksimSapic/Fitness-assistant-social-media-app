@@ -42,6 +42,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     posts_count = models.PositiveIntegerField(default=0)
     biography = models.TextField(blank=True)
     profile_picture = models.BinaryField(null=True, blank=True)
+    profile_picture_avatar = models.BinaryField(null=True, blank=True)
     profile_picture_type = models.CharField(max_length=100, null=True, blank=True)  # To store mime type
     weight = models.FloatField(validators=[MinValueValidator(20.0), MaxValueValidator(300.0)])
     height = models.FloatField(validators=[MinValueValidator(0.5), MaxValueValidator(3.0)])

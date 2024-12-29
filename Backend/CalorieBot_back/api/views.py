@@ -12,12 +12,17 @@ from django.db.models import Sum, Avg
 import math as m
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
-from django.http import FileResponse
+from django.http import FileResponse, HttpResponse
 from rest_framework import viewsets
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.decorators import action
+from PIL import Image
+import io
+import logging
+from rest_framework.pagination import PageNumberPagination
 
 model_path = os.path.join(settings.BASE_DIR, 'AI_model', 'model.pkl')
+logger = logging.getLogger(__name__)
 
 @api_view(['POST'])
 def register_user(request):
@@ -180,27 +185,32 @@ def get_user_statistics(request, user_id):
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
-    
-# @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-# def get_pfp(request, user_id):
-#     try:
-#         user = User.objects.get(id=user_id)
-#         if user.profile_picture:
-#             file_path = os.path.join(settings.MEDIA_ROOT, str(user.profile_picture))
-#             if os.path.exists(file_path):
-#                 return FileResponse(open(file_path, 'rb'), content_type='image/*')
-#     except Exception as e:
-#         return HttpResponse(status=404)
+class PostPagination(PageNumberPagination):
+    page_size = 30
+    page_size_query_param = 'page_size'
+    max_page_size = 100
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     parser_classes = (MultiPartParser, FormParser)
+    pagination_class = PostPagination
+    
+    def get_queryset(self):
+        queryset = Post.objects.all().order_by('-created_at')
+        user_id = self.request.query_params.get('user', None)
+        
+        if user_id is not None:
+            queryset = queryset.filter(user__id=user_id)
+        elif self.action == 'list' and self.request.path.startswith('/api/posts/'):
+            # Filter out current user's posts for the main feed
+            queryset = queryset.exclude(user=self.request.user)
+            
+        return queryset
     
     def perform_create(self, serializer):
-        post = serializer.save(user=self.request.user)
+        post = serializer.save()
         if 'file' in self.request.FILES:
             file_obj = self.request.FILES['file']
             Attachment.objects.create(
@@ -250,12 +260,33 @@ def update_profile_picture(request):
         user = request.user
         if 'profile_picture' in request.FILES:
             file = request.FILES['profile_picture']
+            logger.info(f"Received file: {file.name}, size: {file.size} bytes")
+            
             user.profile_picture = file.read()
             user.profile_picture_type = file.content_type
+            
+            # Create avatar version
+            try:
+                image = Image.open(file)
+                avatar_size = (image.width // 3, image.height // 3)  
+                image.thumbnail(avatar_size)
+                
+                # Save the avatar to a BytesIO object
+                avatar_io = io.BytesIO()
+                image.save(avatar_io, format='JPEG')
+                avatar_io.seek(0)  
+                
+                user.profile_picture_avatar = avatar_io.read() 
+                logger.info(f"Avatar created with size: {avatar_io.getbuffer().nbytes} bytes")
+            except Exception as img_error:
+                logger.error(f"Error processing image: {img_error}")
+                return Response({'error': 'Invalid image file'}, status=400)
+            
             user.save()
             return Response({'message': 'Profile picture updated successfully'})
         return Response({'error': 'No file provided'}, status=400)
     except Exception as e:
+        logger.error(f"Error updating profile picture: {e}")
         return Response({'error': str(e)}, status=400)
 
 @api_view(['GET'])
@@ -271,4 +302,32 @@ def get_profile_picture(request, user_id):
         return Response({'error': 'No profile picture found'}, status=404)
     except User.DoesNotExist:
         return Response({'error': 'User not found'}, status=404)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_profile_picture_avatar(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+        if user.profile_picture:
+            return HttpResponse(
+                user.profile_picture_avatar,
+                content_type=user.profile_picture_type
+            )
+        return Response({'error': 'No profile picture found'}, status=404)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=404)
+        
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_profile_picture(request,user_id):
+    try:
+         user = User.objects.get(id=user_id)
+         if(user.profile_picture):
+             user.profile_picture=None
+             user.profile_picture_type=None
+             user.profile_picture_avatar = None
+             user.save()
+             return Response({'message':'Deletion successffull'},status=200)
+    except User.DoesNotExist:
+        return Response({'error':'user does no exist'},status=404)
 

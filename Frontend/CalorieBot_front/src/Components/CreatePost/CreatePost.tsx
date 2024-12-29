@@ -5,6 +5,7 @@ import { AttachFile, Close } from "@mui/icons-material";
 import { IconButton, Tooltip } from "@mui/material";
 import { authenticatedFetch, postFetch } from "../../utils/api";
 import config from "../../config";
+import { user } from "../../Models/user";
 
 function CreatePost() {
   const [createpost, setCreatePost] = useState(false);
@@ -13,7 +14,8 @@ function CreatePost() {
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { theme } = useTheme();
-
+  const userdata = localStorage.getItem("user");
+  const user = userdata? JSON.parse(userdata):null;
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -48,13 +50,10 @@ function CreatePost() {
     }
 
     try {
-      const response = await postFetch(
-        `${config.url}api/posts/`,
-        {
-          method: "POST",
-          body: formData
-        }
-      );
+      const response = await postFetch(`${config.url}api/posts/`, {
+        method: "POST",
+        body: formData,
+      });
 
       if (response?.ok) {
         setCreatePost(false);

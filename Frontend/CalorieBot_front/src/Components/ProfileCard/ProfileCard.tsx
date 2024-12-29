@@ -1,10 +1,11 @@
 import { Avatar, Menu, MenuItem } from "@mui/material";
 import { user } from "../../Models/user";
 import { useTheme } from "../../Theme/Theme";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import config from "../../config";
 import { authenticatedFetch, postFetch } from "../../utils/api";
 import "./ProfileCard.css";
+import { useUserContext } from "../../Context/UserContext";
 
 interface ProfileCardProps {
   user: user;
@@ -12,29 +13,31 @@ interface ProfileCardProps {
 
 function ProfileCard({ user }: ProfileCardProps) {
   const { theme, toggleTheme } = useTheme();
-  const [profileImage, setProfileImage] = useState<string | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const imageRef = useRef<HTMLInputElement>(null);
   const open = Boolean(anchorEl);
-
-  useEffect(() => {
-    const fetchProfileImage = async () => {
-      try {
-        const response = await authenticatedFetch(
-          `${config.url}api/profile-picture/${user.id}`,
-          {
-            method: "GET",
-          }
-        );
-        if (response && response.ok) {
-          const blob = await response.blob();
-          const imageUrl = URL.createObjectURL(blob);
-          setProfileImage(imageUrl);
+  // debug
+  // console.log(user);
+  const { setProfileImage } = useUserContext();
+  const { profileImage } = useUserContext();
+  const fetchProfileImage = async () => {
+    try {
+      const response = await authenticatedFetch(
+        `${config.url}api/profile-picture/${user.id}`,
+        {
+          method: "GET",
         }
-      } catch (error) {
-        console.error("Error fetching profile picture:", error);
+      );
+      if (response && response.ok) {
+        const blob = await response.blob();
+        const imageUrl = URL.createObjectURL(blob);
+        setProfileImage(imageUrl);
       }
-    };
-
+    } catch (error) {
+      console.error("Error fetching profile picture:", error);
+    }
+  };
+  useEffect(() => {
     if (user.profile_picture) {
       fetchProfileImage();
     }
@@ -66,57 +69,43 @@ function ProfileCard({ user }: ProfileCardProps) {
     </div>
   );
 
-  const handleChangePicture = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangePicture = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
+    console.log(file);
     if (file) {
-        const formData = new FormData();
-        formData.append('profile_picture', file);
+      const formData = new FormData();
+      formData.append("profile_picture", file);
 
-        try {
-            const response = await postFetch(
-                `${config.url}api/profile-picture/`,
-                {
-                    method: 'POST',
-                    body: formData
-                }
-            );
+      try {
+        const response = await postFetch(`${config.url}api/profile-picture/`, {
+          method: "POST",
+          body: formData,
+        });
 
-            if (response?.ok) {
-                // Refresh the profile picture
-                setProfileImage(`${config.url}api/profile-picture/${user.id}/?${new Date().getTime()}`);
-            }
-        } catch (error) {
-            console.error('Error updating profile picture:', error);
+        if (response?.ok) {
+          fetchProfileImage();
+          const imageUrl = URL.createObjectURL(file);
+          setProfileImage(imageUrl);
         }
+      } catch (error) {
+        console.error("Error updating profile picture:", error);
+      }
     }
   };
 
-  const handleRemovePicture = () => {
-    setProfileImage(null);
-    // Additional logic to remove the profile picture from the server
-  };
-
-  const handleAddPicture = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-        const formData = new FormData();
-        formData.append('profile_picture', file);
-
-        try {
-            const response = await postFetch(
-                `${config.url}api/profile-picture/`,
-                {
-                    method: 'POST',
-                    body: formData
-                }
-            );
-
-            if (response?.ok) {
-                setProfileImage(`${config.url}api/profile-picture/${user.id}/?${new Date().getTime()}`);
-            }
-        } catch (error) {
-            console.error('Error updating profile picture:', error);
-        }
+  const handleRemovePicture = async () => {
+    try {
+      const response = await authenticatedFetch(
+        `${config.url}api/profile-picture-delete/${user.id}/`,
+        { method: "DELETE" }
+      );
+      if (response?.ok) {
+        setProfileImage(null);
+      }
+    } catch (error) {
+      console.error("Error deleting picture: ", error);
     }
   };
 
@@ -220,14 +209,46 @@ function ProfileCard({ user }: ProfileCardProps) {
             gridTemplateColumns: "repeat(2, 1fr)",
           }}
         >
-          <StatItem style={{transition:"0.5s ease"}} label="Weight" value={`${user.weight} kg`} />
-          <StatItem style={{transition:"0.5s ease"}} label="Height" value={`${user.height} m`} />
-          <StatItem style={{transition:"0.5s ease"}} label="Age" value={user.age.toString()} />
-          <StatItem style={{transition:"0.5s ease"}} label="BMI" value={user.bmi.toFixed(1)} />
-          <StatItem style={{transition:"0.5s ease"}} label="Body Fat" value={`${user.fat_percentage}%`} />
-          <StatItem style={{transition:"0.5s ease"}} label="Experience" value={`${user.experience_level}/10`} />
-          <StatItem style={{transition:"0.5s ease"}} label="Weekly" value={user.workout_frequency.toString()} />
-          <StatItem style={{transition:"0.5s ease"}} label="Posts" value={user.posts_count.toString()} />
+          <StatItem
+            style={{ transition: "0.5s ease" }}
+            label="Weight"
+            value={`${user.weight} kg`}
+          />
+          <StatItem
+            style={{ transition: "0.5s ease" }}
+            label="Height"
+            value={`${user.height} m`}
+          />
+          <StatItem
+            style={{ transition: "0.5s ease" }}
+            label="Age"
+            value={user.age.toString()}
+          />
+          <StatItem
+            style={{ transition: "0.5s ease" }}
+            label="BMI"
+            value={user.bmi.toFixed(1)}
+          />
+          <StatItem
+            style={{ transition: "0.5s ease" }}
+            label="Body Fat"
+            value={`${user.fat_percentage}%`}
+          />
+          <StatItem
+            style={{ transition: "0.5s ease" }}
+            label="Experience"
+            value={`${user.experience_level}/10`}
+          />
+          <StatItem
+            style={{ transition: "0.5s ease" }}
+            label="Weekly"
+            value={user.workout_frequency.toString()}
+          />
+          <StatItem
+            style={{ transition: "0.5s ease" }}
+            label="Posts"
+            value={user.posts_count.toString()}
+          />
         </div>
       </div>
       <Menu
@@ -249,22 +270,47 @@ function ProfileCard({ user }: ProfileCardProps) {
               filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
               bgcolor: theme.element,
               "& .MuiMenuItem-root": {
-                  color: theme.text_plain,
-              }
+                color: theme.text_plain,
+              },
             },
           },
         }}
       >
-        <MenuItem disabled={!profileImage} onClick={handleChangePicture}>
-          Change Picture
-        </MenuItem>
-        <MenuItem disabled={!profileImage} onClick={handleRemovePicture}>
-          Remove Picture
-        </MenuItem>
-        <MenuItem disabled={!!profileImage} onClick={handleAddPicture}>
+        <MenuItem
+          disabled={!!profileImage}
+          onClick={() => {
+            imageRef.current?.click();
+            setAnchorEl(null);
+          }}
+        >
           Add Picture
         </MenuItem>
+        <MenuItem
+          disabled={!profileImage}
+          onClick={() => {
+            imageRef.current?.click();
+            setAnchorEl(null);
+          }}
+        >
+          Change Picture
+        </MenuItem>
+        <MenuItem
+          disabled={!profileImage}
+          onClick={() => {
+            handleRemovePicture();
+            setAnchorEl(null);
+          }}
+        >
+          Remove Picture
+        </MenuItem>
       </Menu>
+      <input
+        type="file"
+        style={{ display: "none" }}
+        accept="image/jpg"
+        ref={imageRef}
+        onChange={handleChangePicture}
+      />
     </div>
   );
 }

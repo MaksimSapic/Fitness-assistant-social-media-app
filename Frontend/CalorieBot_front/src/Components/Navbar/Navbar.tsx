@@ -19,10 +19,10 @@ import {
 import { Settings, Logout } from "@mui/icons-material";
 import { authenticatedFetch } from "../../utils/api";
 import config from "../../config";
+import { useUserContext } from "../../Context/UserContext";
 
 function Navbar() {
   const { theme, toggleTheme } = useTheme();
-  const [profileImage, setProfileImage] = useState<string | null>(null);
 
   const location = useLocation();
   const [selected, setSelected] = useState(() => {
@@ -37,44 +37,18 @@ function Navbar() {
   const data = localStorage.getItem("user");
   const user = data ? JSON.parse(data) : null;
   const username = user ? user["first_name"] + " " + user["last_name"] : "";
-  //mock data
-
-  useEffect(() => {
-    const fetchProfileImage = async () => {
-      try {
-        const response = await authenticatedFetch(
-          `${config.url}api/profile-picture/${user.id}`,
-          {
-            method: "GET",
-          }
-        );
-        if (response && response.ok) {
-          const blob = await response.blob();
-          const imageUrl = URL.createObjectURL(blob);
-          setProfileImage(imageUrl);
-        }
-      } catch (error) {
-        console.error("Error fetching profile picture:", error);
-      }
-    };
-
-    if (user.profile_picture) {
-      fetchProfileImage();
-    }
-  }, [user.id, user.profile_picture]);
+  const {profileAvatar} = useUserContext();
   const notifications = [
     "make the login page",
     "backend is waiting",
     "jel sapunjas macora?",
   ];
-  // states for dropdowns
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const open = Boolean(anchorEl);
   const isOpen = (menuId: string) => openMenu === menuId;
   const handleClick =
     (menuId: string) => (event: React.MouseEvent<HTMLElement>) => {
-      // event.stopPropagation();
       if (openMenu && openMenu !== menuId) {
         setOpenMenu(null);
         setAnchorEl(null);
@@ -176,16 +150,32 @@ function Navbar() {
         onClick={(event) => handleClick("profile-menu")(event)}
       >
         <Tooltip title={username}>
-          <PersonOutlineIcon
-            style={{
-              borderRadius: 90,
-              transition: "0.5s ease-in",
-              color: theme.icon,
-            }}
-            aria-controls={open ? "profile-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
-          />
+          {profileAvatar ? (
+            <img
+              src={profileAvatar}
+              alt="Profile"
+              style={{
+                width: "30px",
+                height: "30px",
+                borderRadius: "50%",
+                objectFit: "cover",
+              }}
+              aria-controls={open ? "profile-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? "true" : undefined}
+            />
+          ) : (
+            <PersonOutlineIcon
+              style={{
+                borderRadius: 90,
+                transition: "0.5s ease-in",
+                color: theme.icon,
+              }}
+              aria-controls={open ? "profile-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? "true" : undefined}
+            />
+          )}
         </Tooltip>
       </Box>
       <Menu
@@ -245,11 +235,12 @@ function Navbar() {
           }}
         >
           <MenuItem onClick={handleClose} style={{ color: theme.text_plain }}>
-            {profileImage ? (
+            {profileAvatar ? (
               <img
                 className="profile-avatar"
-                src={profileImage}
+                src={profileAvatar}
                 alt="Profile"
+                style={{ marginRight: "10px" }}
               />
             ) : (
               <Avatar />

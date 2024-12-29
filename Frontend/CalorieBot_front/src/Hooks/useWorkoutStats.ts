@@ -46,28 +46,29 @@ export const useWorkoutStats = (userId: number) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const response = await authenticatedFetch(`${config.url}api/user-statistics/${userId}/`);
-        if (response && !response.ok) {
-          throw new Error('Failed to fetch statistics');
-        }
-        if (response) {
-          const data = await response.json();
-          setStats(data);
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setLoading(false);
+  const fetchStats = async () => {
+    setLoading(true);
+    try {
+      const response = await authenticatedFetch(`${config.url}api/user-statistics/${userId}/`);
+      if (response && !response.ok) {
+        throw new Error('Failed to fetch statistics');
       }
-    };
+      if (response) {
+        const data = await response.json();
+        setStats(data);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     if (userId) {
       fetchStats();
     }
   }, [userId]);
 
-  return { stats, loading, error };
+  return { stats, loading, error, refreshStats: fetchStats };
 };
