@@ -2,10 +2,13 @@
     display: flex;
     margin: auto;
     width: 80%;
+    gap: 20px;
 }
 .posts{
     width: 70%;
 }
 .sidebar{
+    height: fit-content;
+    max-height: calc(100vh - 40px);
     width: 30%;
 }

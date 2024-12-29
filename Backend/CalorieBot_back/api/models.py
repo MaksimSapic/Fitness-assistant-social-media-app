@@ -52,6 +52,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     workout_frequency = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
     bmi = models.FloatField(editable=False)
     experience_level = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
+    following = models.ManyToManyField(
+        'self',
+        symmetrical=False,
+        related_name='followers'
+    )
 
     objects = UserManager()
 
@@ -114,3 +119,11 @@ class Attachment(models.Model):
     file_name = models.CharField(max_length=255)
     file_type = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
+
+class PostLike(models.Model):
+    post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='likes')
+    user = models.ForeignKey('User', on_delete=models.CASCADE, related_name='liked_posts')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('post', 'user')

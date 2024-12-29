@@ -2,21 +2,60 @@ import { Avatar } from "@mui/material";
 import { useTheme } from "../../Theme/Theme";
 import { useState } from "react";
 import AttachmentModal from "./AttachmentModal";
+import { authenticatedFetch } from "../../utils/api"
+import config from "../../config";
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 
 interface PostProps {
-  post: any;
+  post: {
+    id: number;
+    content: string;
+    created_at: string;
+    likes_count: number;
+    comments_count: number;
+    is_liked: boolean;
+    user: {
+      id: number;
+      first_name: string;
+      last_name: string;
+      profile_picture_avatar: string;
+      profile_picture_type: string;
+    };
+    attachments: any[];
+  };
   formatTimestamp: (timestamp: string) => string;
+  onLikeToggle?: (postId: number) => void;
 }
 
-function Post({ post, formatTimestamp }: PostProps) {
+function Post({ post, formatTimestamp, onLikeToggle }: PostProps) {
   const { theme } = useTheme();
   const [selectedAttachment, setSelectedAttachment] = useState<any>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [isLiked, setIsLiked] = useState(post.is_liked);
+  const [likesCount, setLikesCount] = useState(post.likes_count);
 
+  const handleLike = async () => {
+    try {
+      const response = await authenticatedFetch(`${config.url}api/posts/${post.id}/like/`, {
+        method: isLiked ? 'DELETE' : 'POST',
+      });
+
+      if (response?.ok) {
+        setIsLiked(!isLiked);
+        setLikesCount(prev => isLiked ? prev - 1 : prev + 1);
+        onLikeToggle?.(post.id);
+      }
+    } catch (error) {
+      console.error('Error toggling like:', error);
+    }
+  };
   const renderAttachment = () => {
     if (!post.attachments || post.attachments.length === 0) return null;
     
     const attachment = post.attachments[0];
+    if (!attachment || !attachment.file_type) return null;
     
     const handleAttachmentClick = async () => {
       if (attachment.file_type.startsWith('image/')) {
@@ -61,6 +100,34 @@ function Post({ post, formatTimestamp }: PostProps) {
     return null;
   };
 
+  const renderFooter = () => (
+    <div className="post-footer" style={{ 
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'flex-end',
+      gap: '15px', 
+      marginTop: '10px' 
+    }}>
+      <div 
+        onClick={handleLike} 
+        style={{ 
+          cursor: 'pointer', 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '5px',
+          color: isLiked ? '#ff4081' : theme.text_plain 
+        }}
+      >
+        {isLiked ? <FavoriteIcon /> : <FavoriteBorderIcon />} 
+        <span>{likesCount}</span>
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: theme.text_plain }}>
+        <ChatBubbleOutlineIcon /> 
+        <span>{post.comments_count}</span>
+      </div>
+    </div>
+  );
+
   return (
     <>
       <div
@@ -88,6 +155,7 @@ function Post({ post, formatTimestamp }: PostProps) {
         </div>
         <div className="post-main">{post.content}</div>
         {renderAttachment()}
+        {renderFooter()}
       </div>
       <AttachmentModal
         open={modalOpen}

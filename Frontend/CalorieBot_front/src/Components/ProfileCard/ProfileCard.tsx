@@ -16,32 +16,7 @@ function ProfileCard({ user }: ProfileCardProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const imageRef = useRef<HTMLInputElement>(null);
   const open = Boolean(anchorEl);
-  // debug
-  // console.log(user);
-  const { setProfileImage } = useUserContext();
-  const { profileImage } = useUserContext();
-  const fetchProfileImage = async () => {
-    try {
-      const response = await authenticatedFetch(
-        `${config.url}api/profile-picture/${user.id}`,
-        {
-          method: "GET",
-        }
-      );
-      if (response && response.ok) {
-        const blob = await response.blob();
-        const imageUrl = URL.createObjectURL(blob);
-        setProfileImage(imageUrl);
-      }
-    } catch (error) {
-      console.error("Error fetching profile picture:", error);
-    }
-  };
-  useEffect(() => {
-    if (user.profile_picture) {
-      fetchProfileImage();
-    }
-  }, [user.id, user.profile_picture]);
+  const { profileImage, setProfileImage, refreshImages } = useUserContext();
 
   const StatItem = ({
     label,
@@ -69,11 +44,8 @@ function ProfileCard({ user }: ProfileCardProps) {
     </div>
   );
 
-  const handleChangePicture = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleChangePicture = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    console.log(file);
     if (file) {
       const formData = new FormData();
       formData.append("profile_picture", file);
@@ -85,9 +57,7 @@ function ProfileCard({ user }: ProfileCardProps) {
         });
 
         if (response?.ok) {
-          fetchProfileImage();
-          const imageUrl = URL.createObjectURL(file);
-          setProfileImage(imageUrl);
+          refreshImages();
         }
       } catch (error) {
         console.error("Error updating profile picture:", error);
@@ -169,22 +139,40 @@ function ProfileCard({ user }: ProfileCardProps) {
           flex: 1,
           display: "flex",
           flexDirection: "column",
+          gap: "15px",
         }}
       >
-        <div className="info-item" style={{ color: theme.text_plain }}>
-          <h3>E-mail address</h3>
-          <h4>{user.email}</h4>
+        <div
+          className="follow-stats"
+          style={{
+            display: "flex",
+            gap: "20px",
+            color: theme.text_plain,
+            fontSize: "calc(0.5rem + 0.5vw)",
+            fontWeight: "bold",
+          }}
+        >
+          <h4>Following: {user.following_count?.toString() || "0"}</h4>
+          <h4>Followers: {user.followers_count?.toString() || "0"}</h4>
         </div>
+
         <div className="info-item" style={{ color: theme.text_plain }}>
-          <h3>Following: {user.following_count?.toString() || "0"}</h3>
-        </div>
-        <div className="info-item" style={{ color: theme.text_plain }}>
-          <h3>Followers: {user.followers_count?.toString() || "0"}</h3>
-        </div>
-        <div className="info-item" style={{ color: theme.text_plain }}>
-          <h3>Biography</h3>
-          <div>
-            <h4>{user.biography || "No biography yet"}</h4>
+          <div
+            style={{
+              fontSize: "calc(0.5rem + 0.5vw)",
+              fontWeight: "bold",
+              marginBottom: "8px",
+            }}
+          >
+            <h4>Biography</h4>
+          </div>
+          <div
+            style={{
+              fontSize: "calc(0.4rem + 0.4vw)",
+              margin: "1vw",
+            }}
+          >
+            {user.biography || "No biography yet"}
           </div>
         </div>
       </div>

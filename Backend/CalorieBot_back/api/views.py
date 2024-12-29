@@ -5,7 +5,7 @@ import pandas as pd
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
-from .models import User, WorkoutSession, Post, Comment, Attachment
+from .models import User, WorkoutSession, Post, Comment, Attachment, PostLike
 from .serializers import UserSerializer, WorkoutSessionSerializer, PostSerializer, CommentSerializer, AttachmentSerializer
 import pickle
 from django.db.models import Sum, Avg
@@ -20,7 +20,7 @@ from PIL import Image
 import io
 import logging
 from rest_framework.pagination import PageNumberPagination
-
+import base64
 model_path = os.path.join(settings.BASE_DIR, 'AI_model', 'model.pkl')
 logger = logging.getLogger(__name__)
 
@@ -222,12 +222,19 @@ class PostViewSet(viewsets.ModelViewSet):
                 file_type=file_obj.content_type
             )
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['post', 'delete'])
     def like(self, request, pk=None):
         post = self.get_object()
-        post.likes_count += 1
-        post.save()
-        return Response({'status': 'post liked'})
+        like_exists = post.likes.filter(user=request.user).exists()
+
+        if request.method == 'POST' and not like_exists:
+            PostLike.objects.create(post=post, user=request.user)
+            return Response({'status': 'post liked'})
+        elif request.method == 'DELETE' and like_exists:
+            post.likes.filter(user=request.user).delete()
+            return Response({'status': 'post unliked'})
+        
+        return Response({'status': 'no action taken'}, status=400)
 
     @action(detail=True, methods=['get'])
     def attachments(self, request, pk=None):
@@ -266,14 +273,11 @@ def update_profile_picture(request):
             
             user.profile_picture = file.read()
             user.profile_picture_type = file.content_type
-            
-            # Create avatar version
+
             try:
                 image = Image.open(file)
                 avatar_size = (image.width // 3, image.height // 3)  
                 image.thumbnail(avatar_size)
-                
-                # Save the avatar to a BytesIO object
                 avatar_io = io.BytesIO()
                 image.save(avatar_io, format='JPEG')
                 avatar_io.seek(0)  
@@ -333,3 +337,86 @@ def delete_profile_picture(request,user_id):
     except User.DoesNotExist:
         return Response({'error':'user does no exist'},status=404)
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_people(request):
+    users = User.objects.exclude(id=request.user.id)
+    users = users.order_by('?')[:5]
+    
+    data = []
+    for user in users:
+        user_data = {
+            'id': user.id,
+            'username': user.username,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'biography': user.biography,
+            'profile_picture_avatar': None,
+            'profile_picture_type': user.profile_picture_type,
+            'is_following': request.user.following.filter(id=user.id).exists()
+        }
+        
+        if user.profile_picture_avatar:
+            user_data['profile_picture_avatar'] = base64.b64encode(user.profile_picture_avatar).decode('utf-8')
+        
+        data.append(user_data)
+    
+    return Response(data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def follow_user(request, user_id):
+    try:
+        user_to_follow = User.objects.get(id=user_id)
+        request.user.following.add(user_to_follow)
+        
+        # Update counts
+        request.user.following_count = request.user.following.count()
+        user_to_follow.followers_count = user_to_follow.followers.count()
+        
+        request.user.save()
+        user_to_follow.save()
+        
+        return Response({
+            'status': 'success',
+            'following_count': request.user.following_count,
+            'followers_count': user_to_follow.followers_count
+        })
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=404)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def unfollow_user(request, user_id):
+    try:
+        user_to_unfollow = User.objects.get(id=user_id)
+        request.user.following.remove(user_to_unfollow)
+        
+        # Update counts
+        request.user.following_count = request.user.following.count()
+        user_to_unfollow.followers_count = user_to_unfollow.followers.count()
+        
+        request.user.save()
+        user_to_unfollow.save()
+        
+        return Response({
+            'status': 'success',
+            'following_count': request.user.following_count,
+            'followers_count': user_to_unfollow.followers_count
+        })
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=404)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_feed(request):
+    # Get posts from users that the current user follows
+    following_users = request.user.following.all()
+    posts = Post.objects.filter(user__in=following_users).order_by('-created_at')
+    
+    paginator = PageNumberPagination()
+    paginator.page_size = 10
+    result_page = paginator.paginate_queryset(posts, request)
+    serializer = PostSerializer(result_page, many=True)
+    
+    return paginator.get_paginated_response(serializer.data)

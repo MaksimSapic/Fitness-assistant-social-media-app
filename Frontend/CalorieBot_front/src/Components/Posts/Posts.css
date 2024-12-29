@@ -32,3 +32,30 @@
   align-items: center;
   gap: 5px;
 }
+
+.post-footer {
+  padding: 8px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  margin-top: 12px;
+}
+
+.post-footer > div {
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.post-footer > div:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.post-footer svg {
+  font-size: 20px;
+}
+
+.post-footer span {
+  font-size: 14px;
+  margin-left: 4px;
+}

@@ -7,6 +7,7 @@ interface UserContextType {
   setProfileImage: (image: string | null) => void;
   profileAvatar: string | null;
   setProfileAvatar: (image: string | null) => void;
+  refreshImages: () => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -18,29 +19,68 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   const user = userdata ? JSON.parse(userdata) : null;
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [profileAvatar, setProfileAvatar] = useState<string | null>(null);
-  const fetchProfileImage = async () => {
+
+  const fetchImages = async () => {
+    if (!user?.id) return;
+    
     try {
-      const response = await authenticatedFetch(
-        `${config.url}api/profile-picture-avatar/${user.id}`,
-        {
-          method: "GET",
-        }
+      if (profileImage) URL.revokeObjectURL(profileImage);
+      if (profileAvatar) URL.revokeObjectURL(profileAvatar);
+
+      const profileResponse = await authenticatedFetch(
+        `${config.url}api/profile-picture/${user.id}`,
+        { method: "GET" }
       );
-      if (response && response.ok) {
-        const blob = await response.blob();
+      
+      if (profileResponse?.ok) {
+        const blob = await profileResponse.blob();
+        const imageUrl = URL.createObjectURL(blob);
+        setProfileImage(imageUrl);
+      } else {
+        setProfileImage(null);
+      }
+
+      const avatarResponse = await authenticatedFetch(
+        `${config.url}api/profile-picture-avatar/${user.id}`,
+        { method: "GET" }
+      );
+      
+      if (avatarResponse?.ok) {
+        const blob = await avatarResponse.blob();
         const imageUrl = URL.createObjectURL(blob);
         setProfileAvatar(imageUrl);
+      } else {
+        setProfileAvatar(null);
       }
     } catch (error) {
-      console.error("Error fetching profile picture:", error);
+      console.error("Error fetching images:", error);
+      setProfileImage(null);
+      setProfileAvatar(null);
     }
   };
+
   useEffect(() => {
-    fetchProfileImage();
+    if (user?.id) {
+      fetchImages();
+    }
+  }, [user?.id]);
+
+  useEffect(() => {
+    return () => {
+      if (profileImage) URL.revokeObjectURL(profileImage);
+      if (profileAvatar) URL.revokeObjectURL(profileAvatar);
+    };
   }, []);
+
   return (
     <UserContext.Provider
-      value={{ profileImage, setProfileImage, profileAvatar, setProfileAvatar }}
+      value={{ 
+        profileImage, 
+        setProfileImage, 
+        profileAvatar, 
+        setProfileAvatar,
+        refreshImages: fetchImages 
+      }}
     >
       {children}
     </UserContext.Provider>

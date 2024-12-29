@@ -83,11 +83,30 @@ function Posts() {
     }
   };
 
+  const handleLikeToggle = (postId: number) => {
+    setPosts(prevPosts => 
+      prevPosts.map(post => 
+        post.id === postId 
+          ? { 
+              ...post, 
+              is_liked: !post.is_liked,
+              likes_count: post.is_liked ? post.likes_count - 1 : post.likes_count + 1 
+            }
+          : post
+      )
+    );
+  };
+
   return (
     <>
       <div className="posts-wrap" style={{ color: theme.text_plain }}>
         {posts.map((post: any) => (
-          <Post key={post.id} post={post} formatTimestamp={formatTimestamp} />
+          <Post 
+            key={post.id} 
+            post={post} 
+            formatTimestamp={formatTimestamp}
+            onLikeToggle={handleLikeToggle} 
+          />
         ))}
         <div ref={observerTarget} style={{ height: '40px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           {loading && <CircularProgress size={30} style={{ color: theme.text_plain }} />}

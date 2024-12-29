@@ -1,4 +1,5 @@
 import CreatePost from "../../Components/CreatePost/CreatePost";
+import NewsSideBar from "../../Components/NewsSidebar/NewsSideBar";
 import Posts from "../../Components/Posts/Posts";
 import { useTheme } from "../../Theme/Theme";
 import "./News.css";
@@ -13,15 +14,10 @@ function News() {
             backgroundColor: theme.element,
           }}
         >
-          <CreatePost/>
-          <Posts/>
+          <CreatePost />
+          <Posts />
         </div>
-        <div
-          className="screen-element sidebar"  
-          style={{
-            backgroundColor: theme.element,
-          }}
-        ></div>
+        <NewsSideBar />
       </div>
     </>
   );
