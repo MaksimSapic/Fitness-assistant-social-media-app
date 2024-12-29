@@ -75,6 +75,7 @@ def calculate_calories(request):
 
         workout_data = {
             "Session_Duration": float(session_data['Session_Duration']),
+            "Session_Duration_Workout_Frequency": float(session_data['Session_Duration']) * int(session_data['Workout_Frequency']),
             "Avg_BPM": int(session_data['Avg_BPM']),
             "Age": int(session_data['Age']),
             "Gender": session_data['Gender'],
@@ -82,11 +83,12 @@ def calculate_calories(request):
         }
 
         feature_order = [
-            "Session_Duration", 
+            "Session_Duration",
+            "Session_Duration_Workout_Frequency",
             "Avg_BPM",
+            "Fat_Percentage",
             "Age",
-            "Gender",
-            "Fat_Percentage"
+            "Gender"
         ]
 
         final_data = pd.DataFrame([workout_data], columns=feature_order)
