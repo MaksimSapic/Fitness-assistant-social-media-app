@@ -1,0 +1,35 @@
+:root {
+    /* Spacing */
+    --spacing-xs: calc(3px + 0.3vw);
+    --spacing-sm: calc(5px + 0.3vh);
+    --spacing-md: calc(8px + 0.4vh);
+    --spacing-lg: calc(10px + 0.5vh);
+    --spacing-xl: calc(20px + 1vh);
+  
+    /* Font Sizes */
+    --font-xs: calc(0.6rem + 0.2vw);
+    --font-sm: calc(0.7rem + 0.3vw);
+    --font-md: calc(0.8rem + 0.4vw);
+    --font-lg: calc(1rem + 0.8vw);
+    --font-xl: calc(1.3rem + 1.5vw);
+  
+    /* Border Radius */
+    --border-radius-sm: 8px;
+    --border-radius-md: 15px;
+    --border-radius-lg: 20px;
+    --border-radius-full: 50%;
+  
+    /* Transitions */
+    --transition-default: 0.3s ease;
+    --transition-slow: 0.5s ease;
+  
+    /* Shadows */
+    --shadow-default: 0px 2px 8px rgba(0, 0, 0, 0.32);
+    --shadow-light: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0px 4px 12px rgba(0, 0, 0, 0.4);
+  
+    /* Layout */
+    --container-padding: calc(10px + 1vw);
+    --input-height: calc(35px + 1vh);
+    --nav-height: calc(40px + 1.5vw);
+  }

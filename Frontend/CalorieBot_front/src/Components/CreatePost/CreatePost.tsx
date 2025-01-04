@@ -15,7 +15,7 @@ function CreatePost() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { theme } = useTheme();
   const userdata = localStorage.getItem("user");
-  const user = userdata? JSON.parse(userdata):null;
+  const user = userdata ? JSON.parse(userdata) : null;
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -73,7 +73,8 @@ function CreatePost() {
         className="button-initial"
         onClick={() => setCreatePost(!createpost)}
         style={{
-          backgroundColor: theme.interactable,
+          border: `2px solid ${theme.interactable}`,
+          backgroundColor: theme.element,
           color: theme.text_plain,
           borderRadius: 15,
           display: createpost ? "none" : "block",
@@ -90,9 +91,10 @@ function CreatePost() {
             onChange={(e) => setContent(e.target.value)}
             placeholder="What's on your mind?"
             style={{
-              backgroundColor: theme.element,
-              color: theme.text_plain,
-              border: `1px solid ${theme.interactable}`,
+              backgroundColor: theme.interactable,
+              color: theme.text,
+              transition: "all 0.3s ease",
+              outline: "none",
             }}
           />
 
@@ -136,7 +138,8 @@ function CreatePost() {
             <button
               className="button cancel"
               style={{
-                backgroundColor: theme.interactable,
+                border: `2px solid ${theme.interactable}`,
+                backgroundColor: theme.element,
                 color: theme.text_plain,
               }}
               onClick={() => {
@@ -150,7 +153,8 @@ function CreatePost() {
             <button
               className="button confirm-post"
               style={{
-                backgroundColor: theme.interactable,
+                border: `2px solid ${theme.interactable}`,
+                backgroundColor: theme.element,
                 color: theme.text_plain,
               }}
               onClick={handleSubmit}

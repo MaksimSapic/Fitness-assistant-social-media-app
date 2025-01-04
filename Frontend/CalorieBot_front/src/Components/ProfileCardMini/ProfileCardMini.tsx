@@ -1,4 +1,4 @@
-import { Avatar } from "@mui/material";
+import { Avatar, Tooltip } from "@mui/material";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import "./ProfileCardMini.css";
@@ -6,6 +6,7 @@ import { useTheme } from "../../Theme/Theme";
 import { useState } from "react";
 import { authenticatedFetch } from "../../utils/api";
 import config from "../../config";
+import { Label } from "recharts";
 
 interface UserProps {
   user: {
@@ -55,7 +56,7 @@ function ProfileCardMini(data: UserProps) {
     <>
       <div
         className="profile-card"
-        style={{ backgroundColor: theme.background, color: theme.text_plain }}
+        style={{ backgroundColor: theme.interactable, color: theme.text }}
       >
         <div className="pfp">
           {data.user.profile_picture_avatar ? (
@@ -82,7 +83,15 @@ function ProfileCardMini(data: UserProps) {
           </small>
         </div>
         <div className="follow" onClick={handleFollow}>
-          {isFollowing ? <PersonAddAlt1Icon /> : <PersonAddAltIcon />}
+          {isFollowing ? (
+            <Tooltip title="following">
+              <PersonAddAlt1Icon />
+            </Tooltip>
+          ) : (
+            <Tooltip title="follow">
+              <PersonAddAltIcon />
+            </Tooltip>
+          )}
         </div>
       </div>
     </>

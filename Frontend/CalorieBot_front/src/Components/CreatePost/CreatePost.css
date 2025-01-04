@@ -1,10 +1,10 @@
 @import "../../App.css";
 /* initial */
 .button-initial{
-    padding: 1vw;
+    padding: var(--spacing-md);
     text-align: center;
     cursor: pointer;
-    transition: all 0.3s ease-in-out;
+    transition: var(--transition-default);
 }
 /* post creation */
 .create-post-wrap{
@@ -17,9 +17,9 @@
 .createpost{
     max-height: 0;
     opacity: 0;
-    padding: 0 1vw;
+    padding: 0 var(--container-padding);
     align-items: center;
-    transition: all 0.3s ease-in-out;
+    transition: var(--transition-default);
     transform: translateY(-20px);
 }
 .createpost.expanded {
@@ -31,15 +31,15 @@
     display: flex;
     align-items: center;
     width: 100%;
-    gap: 10px;
+    gap: var(--spacing-sm);
     justify-content: space-between;
-    padding: 10px 0;
+    padding: var(--spacing-md) 0;
 }
 .post-footer > div:last-child {
     display: flex;
-    gap: 10px;
+    gap: var(--spacing-sm);
     align-items: center;
-    padding: 1vw;
+    padding: var(--spacing-md);
 }
 .post-footer > div:first-child {
     display: flex;
@@ -47,17 +47,17 @@
 }
 .createpost-input{
     width: 100%;
-    padding: 12px;
+    padding: var(--spacing-md);
     margin: 0;
-    border-radius: 20px;
+    border-radius: var(--border-radius-lg);
     box-sizing: border-box;
 }
 .attachment-preview {
-    margin-top: 10px;
+    margin-top: var(--spacing-md);
     max-width: 200px;
     max-height: 200px;
     overflow: hidden;
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
 }
 .attachment-preview img {
     width: 100%;
@@ -77,6 +77,6 @@
     display: none;
 }
 .attachment-name {
-    margin-left: 10px;
-    font-size: 0.9em;
+    margin-left: var(--spacing-md);
+    font-size: var(--font-xs);
 }   

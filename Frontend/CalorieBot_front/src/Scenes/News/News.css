@@ -1,14 +1,16 @@
+@import "../../App.css";
+
 .flex{
     display: flex;
     margin: auto;
     width: 80%;
-    gap: 20px;
+    gap: var(--spacing-lg);
 }
 .posts{
     width: 70%;
 }
 .sidebar{
     height: fit-content;
-    max-height: calc(100vh - 40px);
+    max-height: calc(100vh - var(--nav-height));
     width: 30%;
 }

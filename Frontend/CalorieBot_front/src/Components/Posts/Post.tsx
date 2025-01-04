@@ -2,11 +2,11 @@ import { Avatar } from "@mui/material";
 import { useTheme } from "../../Theme/Theme";
 import { useState } from "react";
 import AttachmentModal from "./AttachmentModal";
-import { authenticatedFetch } from "../../utils/api"
+import { authenticatedFetch } from "../../utils/api";
 import config from "../../config";
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 
 interface PostProps {
   post: {
@@ -38,34 +38,37 @@ function Post({ post, formatTimestamp, onLikeToggle }: PostProps) {
 
   const handleLike = async () => {
     try {
-      const response = await authenticatedFetch(`${config.url}api/posts/${post.id}/like/`, {
-        method: isLiked ? 'DELETE' : 'POST',
-      });
+      const response = await authenticatedFetch(
+        `${config.url}api/posts/${post.id}/like/`,
+        {
+          method: isLiked ? "DELETE" : "POST",
+        }
+      );
 
       if (response?.ok) {
         setIsLiked(!isLiked);
-        setLikesCount(prev => isLiked ? prev - 1 : prev + 1);
+        setLikesCount((prev) => (isLiked ? prev - 1 : prev + 1));
         onLikeToggle?.(post.id);
       }
     } catch (error) {
-      console.error('Error toggling like:', error);
+      console.error("Error toggling like:", error);
     }
   };
   const renderAttachment = () => {
     if (!post.attachments || post.attachments.length === 0) return null;
-    
+
     const attachment = post.attachments[0];
     if (!attachment || !attachment.file_type) return null;
-    
+
     const handleAttachmentClick = async () => {
-      if (attachment.file_type.startsWith('image/')) {
+      if (attachment.file_type.startsWith("image/")) {
         const img = new Image();
         img.src = `data:${attachment.file_type};base64,${attachment.file}`;
         img.onload = () => {
           setSelectedAttachment({
             ...attachment,
             naturalWidth: img.naturalWidth,
-            naturalHeight: img.naturalHeight
+            naturalHeight: img.naturalHeight,
           });
           setModalOpen(true);
         };
@@ -75,24 +78,32 @@ function Post({ post, formatTimestamp, onLikeToggle }: PostProps) {
       }
     };
 
-    if (attachment.file_type.startsWith('image/')) {
+    if (attachment.file_type.startsWith("image/")) {
       return (
-        <div className="post-attachment" onClick={handleAttachmentClick} style={{ cursor: 'pointer' }}>
+        <div
+          className="post-attachment"
+          onClick={handleAttachmentClick}
+          style={{ cursor: "pointer" }}
+        >
           <img
             src={`data:${attachment.file_type};base64,${attachment.file}`}
             alt="Post attachment"
             style={{
-              maxWidth: '200px',
-              maxHeight: '200px',
-              borderRadius: '8px',
-              objectFit: 'cover',
+              maxWidth: "200px",
+              maxHeight: "200px",
+              borderRadius: "8px",
+              objectFit: "cover",
             }}
           />
         </div>
       );
-    } else if (attachment.file_type === 'application/pdf') {
+    } else if (attachment.file_type === "application/pdf") {
       return (
-        <div className="post-attachment" onClick={handleAttachmentClick} style={{ cursor: 'pointer' }}>
+        <div
+          className="post-attachment"
+          onClick={handleAttachmentClick}
+          style={{ cursor: "pointer" }}
+        >
           <div className="pdf-preview">📄 {attachment.file_name}</div>
         </div>
       );
@@ -101,28 +112,38 @@ function Post({ post, formatTimestamp, onLikeToggle }: PostProps) {
   };
 
   const renderFooter = () => (
-    <div className="post-footer" style={{ 
-      display: 'flex', 
-      alignItems: 'center', 
-      justifyContent: 'flex-end',
-      gap: '15px', 
-      marginTop: '10px' 
-    }}>
-      <div 
-        onClick={handleLike} 
-        style={{ 
-          cursor: 'pointer', 
-          display: 'flex', 
-          alignItems: 'center', 
-          gap: '5px',
-          color: isLiked ? '#ff4081' : theme.text_plain 
+    <div
+      className="post-footer"
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "flex-end",
+        gap: "15px",
+        marginTop: "10px",
+      }}
+    >
+      <div
+        onClick={handleLike}
+        style={{
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          gap: "5px",
+          color: isLiked ? "#ff4081" : theme.text,
         }}
       >
-        {isLiked ? <FavoriteIcon /> : <FavoriteBorderIcon />} 
+        {isLiked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
         <span>{likesCount}</span>
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: theme.text_plain }}>
-        <ChatBubbleOutlineIcon /> 
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "5px",
+          color: theme.text,
+        }}
+      >
+        <ChatBubbleOutlineIcon />
         <span>{post.comments_count}</span>
       </div>
     </div>
@@ -130,10 +151,7 @@ function Post({ post, formatTimestamp, onLikeToggle }: PostProps) {
 
   return (
     <>
-      <div
-        className="post"
-        style={{ backgroundColor: theme.background }}
-      >
+      <div className="post" style={{ backgroundColor: theme.interactable }}>
         <div className="post-header">
           {post.user.profile_picture_avatar ? (
             <img
@@ -166,4 +184,4 @@ function Post({ post, formatTimestamp, onLikeToggle }: PostProps) {
   );
 }
 
-export default Post; 
+export default Post;

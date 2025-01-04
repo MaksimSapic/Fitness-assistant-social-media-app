@@ -24,9 +24,11 @@ function Posts() {
       });
       if (response && response.ok) {
         const data = await response.json();
-        setPosts(prev => {
+        setPosts((prev) => {
           const existingIds = new Set(prev.map((post: any) => post.id));
-          const newPosts = data.results.filter((post: any) => !existingIds.has(post.id));
+          const newPosts = data.results.filter(
+            (post: any) => !existingIds.has(post.id)
+          );
           return [...prev, ...newPosts];
         });
         setNextPage(data.next);
@@ -43,7 +45,7 @@ function Posts() {
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      entries => {
+      (entries) => {
         if (entries[0].isIntersecting && nextPage && !loading) {
           getPosts(nextPage);
         }
@@ -84,13 +86,15 @@ function Posts() {
   };
 
   const handleLikeToggle = (postId: number) => {
-    setPosts(prevPosts => 
-      prevPosts.map(post => 
-        post.id === postId 
-          ? { 
-              ...post, 
+    setPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.id === postId
+          ? {
+              ...post,
               is_liked: !post.is_liked,
-              likes_count: post.is_liked ? post.likes_count - 1 : post.likes_count + 1 
+              likes_count: post.is_liked
+                ? post.likes_count - 1
+                : post.likes_count + 1,
             }
           : post
       )
@@ -99,17 +103,27 @@ function Posts() {
 
   return (
     <>
-      <div className="posts-wrap" style={{ color: theme.text_plain }}>
+      <div className="posts-wrap" style={{ color: theme.text }}>
         {posts.map((post: any) => (
-          <Post 
-            key={post.id} 
-            post={post} 
+          <Post
+            key={post.id}
+            post={post}
             formatTimestamp={formatTimestamp}
-            onLikeToggle={handleLikeToggle} 
+            onLikeToggle={handleLikeToggle}
           />
         ))}
-        <div ref={observerTarget} style={{ height: '40px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          {loading && <CircularProgress size={30} style={{ color: theme.text_plain }} />}
+        <div
+          ref={observerTarget}
+          style={{
+            height: "40px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {loading && (
+            <CircularProgress size={30} style={{ color: theme.text }} />
+          )}
         </div>
       </div>
       <AttachmentModal

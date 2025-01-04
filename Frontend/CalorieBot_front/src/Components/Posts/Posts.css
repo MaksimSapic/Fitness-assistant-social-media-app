@@ -1,48 +1,47 @@
 @import "../../App.css";
-.posts-wrap{
-    margin-top: 2vw;
+
+.posts-wrap {
+  margin-top: var(--spacing-xl);
 }
 
-.post{
-    /* box-shadow: 0px 2px 8px rgba(29, 22, 22, 0.32); */
-    padding: 1vw;
-    margin: 0.5vw;
-    border-radius: 15px;
+.post {
+  padding: var(--spacing-md);
+  margin-top: var(--spacing-sm);
+  border-radius: var(--border-radius-md);
 }
 
-.post-header{
-    display: flex;
+.post-header {
+  display: flex;
 }
 
-.post-main{
-    margin-top:10px;
-    margin-bottom:10px;
+.post-main {
+  margin: var(--spacing-md) 0;
 }
 
 .post-attachment {
-  margin-top: 10px;
+  margin-top: var(--spacing-md);
   display: flex;
 }
 
 .pdf-preview {
-  padding: 10px;
+  padding: var(--spacing-md);
   background-color: rgba(0, 0, 0, 0.05);
-  border-radius: 8px;
+  border-radius: var(--border-radius-sm);
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: var(--spacing-xs);
 }
 
 .post-footer {
-  padding: 8px 0;
+  padding: var(--spacing-sm) 0;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
-  margin-top: 12px;
+  margin-top: var(--spacing-md);
 }
 
 .post-footer > div {
-  padding: 5px 10px;
-  border-radius: 4px;
-  transition: all 0.2s ease;
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--border-radius-sm);
+  transition: var(--transition-default);
   display: flex;
   align-items: center;
 }
@@ -52,10 +51,10 @@
 }
 
 .post-footer svg {
-  font-size: 20px;
+  font-size: var(--font-lg);
 }
 
 .post-footer span {
-  font-size: 14px;
-  margin-left: 4px;
+  font-size: var(--font-xs);
+  margin-left: var(--spacing-xs);
 }

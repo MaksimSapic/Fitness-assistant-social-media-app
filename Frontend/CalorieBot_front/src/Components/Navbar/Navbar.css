@@ -2,14 +2,14 @@
 
 nav{
     display: flex;
-    height: calc(40px + 1.5vw);
+    height: var(--nav-height);
     justify-content: space-between;
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
-    padding-left: calc(10px + 1vw);
-    padding-right: calc(10px + 1vw);
-    box-shadow: 0px 2px 8px rgba(29, 22, 22, 0.32);
-    transition:0.5s ease;
+    border-bottom-left-radius: var(--border-radius-md);
+    border-bottom-right-radius: var(--border-radius-md);
+    padding-left: var(--container-padding);
+    padding-right: var(--container-padding);
+    box-shadow: var(--shadow-default);
+    transition: var(--transition-slow);
 }
 /* nav left */
 .nav-left{
@@ -17,7 +17,7 @@ nav{
     justify-content: center;
     align-items: center;
     font-weight: bold;
-    font-size: calc(1rem + 0.8vw);
+    font-size: var(--font-lg);
 }
 
 /* nav right */
@@ -31,22 +31,22 @@ nav{
 .options-icons{
     display: flex;
     justify-content: space-between;
-    gap: calc(8px + 0.7vw);
+    gap: var(--spacing-md);
 }
 .options-buttons{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: calc(8px + 0.7vw);
+    gap: var(--spacing-md);
 }
 
 .nav-link{
-    padding: calc(3px + 0.3vw);
+    padding: var(--spacing-xs);
     font-weight: bold;
-    border-radius: 15px;
+    border-radius: var(--border-radius-md);
     text-decoration: none;
-    transition: 0.2s ease-in;
-    font-size: calc(0.8rem + 0.3vw);
+    transition: var(--transition-default);
+    font-size: var(--font-sm);
 }
 
 .menu-link{
@@ -55,6 +55,6 @@ nav{
 .profile-avatar{
     width: 50px;
     height: 50px;
-    border-radius: 50%;
+    border-radius: var(--border-radius-full);
     object-fit: cover;
 }

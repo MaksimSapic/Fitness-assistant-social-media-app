@@ -6,7 +6,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: calc(10px + 1vh);
+  padding: var(--spacing-lg);
   overflow: hidden;
   position: fixed;
   top: 0;
@@ -16,32 +16,34 @@
 .login-box {
   width: calc(300px + 15vw);
   max-width: 500px;
-  padding: calc(20px + 1.5vh) calc(20px + 1.5vw);
+  padding: var(--spacing-xl);
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
 }
-.login-box input{
-    width: 95%;
-    margin: 1vw;
+
+.login-box input {
+  width: 95%;
+  margin: var(--spacing-sm);
 }
+
 .form-group {
-  margin: calc(10px + 0.5vh) 0;
+  margin: var(--spacing-md) 0;
 }
 
 .button-login {
   width: calc(300px + 5vw);
-  margin-top: 1vw;
+  margin-top: var(--spacing-sm);
 }
 
 .register {
   display: inline-block;
-  padding: calc(5px + 0.3vh) calc(10px + 0.5vw);
-  font-size: calc(0.7rem + 0.3vw);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-sm);
 }   
 
 .forgotpassword {
-  font-size: calc(0.6rem + 0.3vw);
-  margin: calc(5px + 0.3vh);
+  font-size: var(--font-xs);
+  margin: var(--spacing-xs);
 }

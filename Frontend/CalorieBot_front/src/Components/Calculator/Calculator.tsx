@@ -4,7 +4,7 @@ import "./Calculator.css";
 import config from "../../config";
 import { Select, MenuItem } from "@mui/material";
 import { toast } from "react-hot-toast";
-import { authenticatedFetch } from '../../utils/api';
+import { authenticatedFetch } from "../../utils/api";
 
 interface WorkoutData {
   heart_avg: number;
@@ -85,9 +85,7 @@ function Calculator({ onWorkoutComplete }: CalculatorProps) {
         return;
       }
 
-      if (
-        workoutData.heart_avg <= 0 
-      ) {
+      if (workoutData.heart_avg <= 0) {
         toast.error("Please enter all heart rate values", {
           style: {
             background: theme.element,
@@ -98,26 +96,29 @@ function Calculator({ onWorkoutComplete }: CalculatorProps) {
         return;
       }
       // If all validations pass, proceed with the API call
-      const response = await authenticatedFetch(`${config.url}api/calculate-calories/`, {
-        method: "POST",
-        body: JSON.stringify({
-          session: {
-            id: user.id,
-            Age: user.age,
-            Weight: user.weight,
-            Gender: user.gender == "M" ? "Male" : "Female",
-            BMI: user.bmi,
-            Session_Duration: workoutData.duration,
-            Fat_Percentage: user.fat_percentage,
-            Workout_Type: workoutData.workout_type,
-            Water_Intake: workoutData.water_intake,
-            Avg_BPM: workoutData.heart_avg,
-            Experience_level: user.experience_level,
-            Workout_Frequency: user.workout_frequency,
-            Height: user.height,
-          },
-        }),
-      });
+      const response = await authenticatedFetch(
+        `${config.url}api/calculate-calories/`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            session: {
+              id: user.id,
+              Age: user.age,
+              Weight: user.weight,
+              Gender: user.gender == "M" ? "Male" : "Female",
+              BMI: user.bmi,
+              Session_Duration: workoutData.duration,
+              Fat_Percentage: user.fat_percentage,
+              Workout_Type: workoutData.workout_type,
+              Water_Intake: workoutData.water_intake,
+              Avg_BPM: workoutData.heart_avg,
+              Experience_level: user.experience_level,
+              Workout_Frequency: user.workout_frequency,
+              Height: user.height,
+            },
+          }),
+        }
+      );
 
       if (response?.ok) {
         const data = await response?.json();
@@ -200,12 +201,13 @@ function Calculator({ onWorkoutComplete }: CalculatorProps) {
                 How was your heart rate?
               </label>
               <div className="heart-rate-inputs">
-                
                 <input
                   type="number"
                   name="heart_avg"
                   placeholder="Average"
-                  value={isNaN(workoutData.heart_avg) ? "" : workoutData.heart_avg}
+                  value={
+                    isNaN(workoutData.heart_avg) ? "" : workoutData.heart_avg
+                  }
                   onChange={handleInputChange}
                   style={{
                     backgroundColor: theme.interactable,
@@ -214,7 +216,6 @@ function Calculator({ onWorkoutComplete }: CalculatorProps) {
                     outline: "none",
                   }}
                 />
-              
               </div>
             </div>
 
@@ -288,10 +289,17 @@ function Calculator({ onWorkoutComplete }: CalculatorProps) {
                   placeholder="Hours"
                   min="0"
                   max="24"
-                  value={isNaN(workoutData.duration_hours) ? "" : workoutData.duration_hours}
+                  value={
+                    isNaN(workoutData.duration_hours)
+                      ? ""
+                      : workoutData.duration_hours
+                  }
                   onChange={(e) => {
-                    const hours = e.target.value === "" ? NaN : parseInt(e.target.value);
-                    const minutes = isNaN(workoutData.duration_minutes) ? 0 : workoutData.duration_minutes;
+                    const hours =
+                      e.target.value === "" ? NaN : parseInt(e.target.value);
+                    const minutes = isNaN(workoutData.duration_minutes)
+                      ? 0
+                      : workoutData.duration_minutes;
                     const duration = (isNaN(hours) ? 0 : hours) + minutes / 60;
                     setWorkoutData((prev) => ({
                       ...prev,
@@ -312,11 +320,19 @@ function Calculator({ onWorkoutComplete }: CalculatorProps) {
                   placeholder="Minutes"
                   min="0"
                   max="59"
-                  value={isNaN(workoutData.duration_minutes) ? "" : workoutData.duration_minutes}
+                  value={
+                    isNaN(workoutData.duration_minutes)
+                      ? ""
+                      : workoutData.duration_minutes
+                  }
                   onChange={(e) => {
-                    const minutes = e.target.value === "" ? NaN : parseInt(e.target.value);
-                    const hours = isNaN(workoutData.duration_hours) ? 0 : workoutData.duration_hours;
-                    const duration = hours + (isNaN(minutes) ? 0 : minutes) / 60;
+                    const minutes =
+                      e.target.value === "" ? NaN : parseInt(e.target.value);
+                    const hours = isNaN(workoutData.duration_hours)
+                      ? 0
+                      : workoutData.duration_hours;
+                    const duration =
+                      hours + (isNaN(minutes) ? 0 : minutes) / 60;
                     setWorkoutData((prev) => ({
                       ...prev,
                       duration_minutes: minutes,
@@ -342,7 +358,11 @@ function Calculator({ onWorkoutComplete }: CalculatorProps) {
                 name="water_intake"
                 className="water-input"
                 placeholder="Water in liters"
-                value={isNaN(workoutData.water_intake) ? "" : workoutData.water_intake}
+                value={
+                  isNaN(workoutData.water_intake)
+                    ? ""
+                    : workoutData.water_intake
+                }
                 onChange={handleInputChange}
                 style={{
                   backgroundColor: theme.interactable,
@@ -358,9 +378,9 @@ function Calculator({ onWorkoutComplete }: CalculatorProps) {
           <button
             className="button button-submit"
             style={{
-              backgroundColor: theme.interactable,
-              color: theme.text,
-              border: theme.border,
+              border: `2px solid ${theme.interactable}`,
+              backgroundColor: theme.element,
+              color: theme.text_plain,
             }}
             onClick={() => {
               if (results) {
