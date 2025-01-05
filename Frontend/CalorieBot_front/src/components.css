@@ -1,0 +1,28 @@
+/* Common button styles */
+.button {
+    cursor: pointer;
+    font-size: var(--font-md);
+    font-weight: bold;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: var(--border-radius-md);
+    border: 1px solid transparent;
+    transition: var(--transition-default);
+  }
+  
+  /* Common screen element styles */
+  .screen-element {
+    margin: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-default);
+    transition: var(--transition-slow);
+  }
+  
+  /* Common input styles */
+  .input-default {
+    width: 100%;
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-md);
+    transition: var(--transition-default);
+  }

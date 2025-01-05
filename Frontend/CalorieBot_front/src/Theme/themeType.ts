@@ -1,7 +1,7 @@
 import { palette } from "./colors";
 
 export const lightTheme = {
-  element: palette.light.element[500],
+  element: palette.light.element[600],
   text: palette.light.text[500],
   text_plain: palette.light.text_plain[500],
   interactable: palette.light.interactable[500],
@@ -20,4 +20,4 @@ export const darkTheme = {
   icon: palette.dark.icon[500],
 };
 
-export type ThemeType = typeof lightTheme;
+export type ThemeType = typeof darkTheme;

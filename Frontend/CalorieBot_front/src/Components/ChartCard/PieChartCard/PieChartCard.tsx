@@ -6,12 +6,19 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
-import data from "./MockData";
 import { useTheme } from "../../../Theme/Theme";
 import Colors from "../chart_colors";
 import "./PieChartCard.css";
-function PieChartCard() {
-  const { theme, toggleTheme } = useTheme();
+
+interface PieChartProps {
+  Pdata: {
+    workout_type: string;
+    count: number;
+  }[];
+}
+
+function PieChartCard({ Pdata }: PieChartProps) {
+  const { theme } = useTheme();
   return (
     <>
       <div
@@ -51,19 +58,19 @@ function PieChartCard() {
                 }}
               >
                 <Pie
-                  data={data}
-                  dataKey="value"
-                  nameKey="name"
+                  data={Pdata}
+                  dataKey="count"
+                  nameKey="workout_type"
                   cx="50%"
                   cy="50%"
                   outerRadius="45%"
                   fill="#8884d8"
                 >
-                  {data.map((entry, index) => (
+                  {Pdata?.map((entry, index) => (
                     <Cell
                       key={`cell-${index}`}
                       fill={Colors[index % Colors.length]}
-                    ></Cell>
+                    />
                   ))}
                 </Pie>
                 <Tooltip />

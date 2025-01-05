@@ -20,7 +20,7 @@ function Register() {
     last_name: "",
     weight: "",
     height: "",
-    gender: "",
+    gender: "select gender",
     age: "",
     fat_percentage: "",
     workout_frequency: "",
@@ -111,7 +111,7 @@ function Register() {
                   required
                   style={{
                     backgroundColor: theme.interactable,
-                    color: theme.text_plain,
+                    color: theme.text,
                   }}
                 />
               </div>
@@ -126,7 +126,7 @@ function Register() {
                   required
                   style={{
                     backgroundColor: theme.interactable,
-                    color: theme.text_plain,
+                    color: theme.text,
                   }}
                 />
               </div>
@@ -141,7 +141,7 @@ function Register() {
                   required
                   style={{
                     backgroundColor: theme.interactable,
-                    color: theme.text_plain,
+                    color: theme.text,
                   }}
                 />
               </div>
@@ -156,7 +156,7 @@ function Register() {
                   required
                   style={{
                     backgroundColor: theme.interactable,
-                    color: theme.text_plain,
+                    color: theme.text,
                   }}
                 />
               </div>
@@ -171,7 +171,7 @@ function Register() {
                   required
                   style={{
                     backgroundColor: theme.interactable,
-                    color: theme.text_plain,
+                    color: theme.text,
                   }}
                 />
               </div>
@@ -204,7 +204,7 @@ function Register() {
                   required
                   style={{
                     backgroundColor: theme.interactable,
-                    color: theme.text_plain,
+                    color: theme.text,
                   }}
                 />
               </div>
@@ -222,7 +222,7 @@ function Register() {
                   required
                   style={{
                     backgroundColor: theme.interactable,
-                    color: theme.text_plain,
+                    color: theme.text,
                   }}
                 />
               </div>
@@ -236,6 +236,7 @@ function Register() {
                   sx={{
                     backgroundColor: theme.interactable,
                     color: theme.text_plain,
+                    width:"72%",
                     fontWeight: "bold",
                     transition: "all 0.3s ease",
                     borderRadius: "15px",
@@ -292,7 +293,7 @@ function Register() {
                   required
                   style={{
                     backgroundColor: theme.interactable,
-                    color: theme.text_plain,
+                    color: theme.text,
                   }}
                 />
               </div>
@@ -310,7 +311,7 @@ function Register() {
                   required
                   style={{
                     backgroundColor: theme.interactable,
-                    color: theme.text_plain,
+                    color: theme.text,
                   }}
                 />
               </div>
@@ -327,7 +328,7 @@ function Register() {
                   required
                   style={{
                     backgroundColor: theme.interactable,
-                    color: theme.text_plain,
+                    color: theme.text,
                   }}
                 />
               </div>
@@ -344,7 +345,7 @@ function Register() {
                   required
                   style={{
                     backgroundColor: theme.interactable,
-                    color: theme.text_plain,
+                    color: theme.text,
                   }}
                 />
               </div>
@@ -356,7 +357,7 @@ function Register() {
                   onClick={handleBack}
                   style={{
                     backgroundColor: theme.interactable,
-                    color: theme.text_plain,
+                    color: theme.text,
                   }}
                 >
                   Back
@@ -366,7 +367,7 @@ function Register() {
                   className="button button-register"
                   style={{
                     backgroundColor: theme.interactable,
-                    color: theme.text_plain,
+                    color: theme.text,
                   }}
                 >
                   Register

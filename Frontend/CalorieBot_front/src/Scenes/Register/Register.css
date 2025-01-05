@@ -7,48 +7,50 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: calc(10px + 1vh);
+  padding: var(--spacing-lg);
 }
-.register-container input,select{
+
+.register-container input,
+.register-container select {
   width: 70%;
-  margin: 0.2vw;
+  margin: var(--spacing-xs);
 }
+
 .register-box {
   width: calc(350px + 15vw);
   max-width: 600px;
-  padding: calc(20px + 1.5vh) calc(20px + 1.5vw);
+  padding: var(--spacing-xl);
 }
 
 .form-group {
-  margin: calc(10px + 0.5vh) 0;
+  margin: var(--spacing-md) 0;
 }
-
 
 .button-group {
   display: flex;
   justify-content: space-between;
-  margin: calc(15px + 1vh) 0;
+  margin: var(--spacing-lg) 0;
 }
 
 .button-back,
 .button-next,
 .button-register {
   width: calc(120px + 4vw);
-  padding: calc(8px + 0.4vh);
+  padding: var(--spacing-sm);
 }
 
 .login-link {
   display: block;
-  margin-top: calc(15px + 1vh);
-  font-size: calc(0.7rem + 0.3vw);
+  margin-top: var(--spacing-lg);
+  font-size: var(--font-sm);
 }
 
 .error-message {
   color: #ff0000;
-  margin: calc(8px + 0.4vh) 0;
-  font-size: calc(0.7rem + 0.3vw);
+  margin: var(--spacing-md) 0;
+  font-size: var(--font-sm);
 }
 
 h1 {
-  margin-bottom: 30px;
+  margin-bottom: var(--spacing-xl);
 }

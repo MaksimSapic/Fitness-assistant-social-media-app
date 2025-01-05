@@ -28,9 +28,9 @@ function Login() {
       const data = await response.json();
 
       if (response.ok) {
-        // Store user data in localStorage or state management solution
-        localStorage.setItem("user", JSON.stringify(data));
-        navigate("/"); // Redirect to home page
+        localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("tokens", JSON.stringify(data.tokens));
+        navigate("/home");
       } else {
         setError(data.error || "Login failed");
       }
@@ -58,10 +58,10 @@ function Login() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                style={{ 
+                style={{
                   backgroundColor: theme.interactable,
-                  color:theme.text_plain
-                 }}
+                  color: theme.text,
+                }}
               />
             </div>
             <div className="form-group">
@@ -70,10 +70,10 @@ function Login() {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                style={{ 
+                style={{
                   backgroundColor: theme.interactable,
-                  color:theme.text_plain
-                 }}
+                  color: theme.text,
+                }}
                 required
               />
             </div>
@@ -89,10 +89,10 @@ function Login() {
             <button
               type="submit"
               className="button button-login"
-              style={{ 
-                    backgroundColor: theme.interactable,
-                    color:theme.text
-                   }}
+              style={{
+                backgroundColor: theme.interactable,
+                color: theme.text,
+              }}
             >
               Login
             </button>

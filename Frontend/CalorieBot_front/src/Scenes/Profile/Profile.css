@@ -1,0 +1,23 @@
+@import "../../App.css";
+
+.posts-insights {
+  display: flex;
+  gap: var(--spacing-lg);
+  margin: var(--spacing-md);
+}
+
+.your-posts,
+.insights {
+  width: 50%;
+}
+
+@media screen and (max-width: 768px) {
+  .posts-insights {
+    flex-direction: column;
+  }
+  
+  .your-posts,
+  .insights {
+    width: 100%;
+  }
+}

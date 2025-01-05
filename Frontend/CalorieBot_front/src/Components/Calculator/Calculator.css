@@ -1,9 +1,16 @@
 @import "../../App.css";
 
-.calculator-footer{
+.calculator-footer {
     text-align: center;
     flex-shrink: 1;
-    padding: calc(20px + 1vh);
+    padding: var(--spacing-xl);
+}
+
+.calculator-main {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(500px + 20vh);
+    justify-content: space-between;
 }
 
 /* results div */
@@ -12,7 +19,7 @@
     height: 0;
     opacity: 0;
     overflow: hidden;
-    transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+    transition: var(--transition-default);
 }
 .results-show {
     text-align: center;
@@ -22,30 +29,33 @@
 }
 .results-span{
     display: inline-block;
-    padding: 10px;
-    border-radius: 15px;
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
 }
 
 /* inputs */
 .inputs {
+    flex: 1;
     display: flex; 
     align-items: center;
     flex-direction: column;
+    justify-content: space-around;
+    padding: var(--spacing-lg) 0;
 }
 .input-group {
     display: flex;
     justify-content:space-between;
     width: 100%;
-    margin: 15px;
+    margin: var(--spacing-md);
 }
 .input-group label {
-    font-size: calc(0.8rem + 0.8vw);
+    font-size: var(--font-md);
     font-weight: 500;
     width: 50%;
 }
 .input-group input,select{
     width: 50%;
-    padding: 10px;
+    padding: var(--spacing-md);
     text-align: center;
 }
 .workout-select{
@@ -55,7 +65,7 @@
 .heart-rate-inputs {
     display: flex;
     width: 50%;
-    gap: 10px;
+    gap: var(--spacing-sm);
 }
 .heart-rate-inputs input {
     flex: 1;
@@ -65,12 +75,12 @@
 .duration-inputs {
     display: flex;
     width: 50%;
-    gap: 10px;
+    gap: var(--spacing-sm);
 }
 
 .duration-inputs input {
     flex: 1;
     width: 40%;
-    padding: calc(10px + 0.5vh) calc(15px + 0.5vw);
-    font-size: calc(0.8rem + 0.4vw);
+    padding: var(--spacing-md);
+    font-size: var(--font-md);
 }

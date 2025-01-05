@@ -1,0 +1,60 @@
+@import "../../App.css";
+
+.posts-wrap {
+  margin-top: var(--spacing-xl);
+}
+
+.post {
+  padding: var(--spacing-md);
+  margin-top: var(--spacing-sm);
+  border-radius: var(--border-radius-md);
+}
+
+.post-header {
+  display: flex;
+}
+
+.post-main {
+  margin: var(--spacing-md) 0;
+}
+
+.post-attachment {
+  margin-top: var(--spacing-md);
+  display: flex;
+}
+
+.pdf-preview {
+  padding: var(--spacing-md);
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: var(--border-radius-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.post-footer {
+  padding: var(--spacing-sm) 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  margin-top: var(--spacing-md);
+}
+
+.post-footer > div {
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--border-radius-sm);
+  transition: var(--transition-default);
+  display: flex;
+  align-items: center;
+}
+
+.post-footer > div:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.post-footer svg {
+  font-size: var(--font-lg);
+}
+
+.post-footer span {
+  font-size: var(--font-xs);
+  margin-left: var(--spacing-xs);
+}

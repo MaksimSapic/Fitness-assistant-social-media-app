@@ -1,4 +1,6 @@
-/* USE FOR GLOBAL CSS */
+@import './variables.css';
+
+/* Global Reset */
 * {
   font-family: "Public Sans";
   padding: 0;
@@ -6,7 +8,7 @@
   user-select: none;
 }
 
-/* Add these new rules */
+/* Base Layout */
 html,
 body {
   overflow-x: hidden;
@@ -19,27 +21,18 @@ body {
   overflow-y: auto;
 }
 
-h1,
-h2,
-h3,
-h4 {
+/* Typography */
+h1, h2, h3, h4 {
   margin: 0;
-  padding: 7px;
-}
-h1 {
-  font-size: calc(1.3rem + 1.5vw);
+  padding: var(--spacing-sm);
 }
 
-h2 {
-  font-size: calc(1rem + 1vw);
-}
-h3 {
-  font-size: calc(0.6rem + 0.8vw);
-}
+h1 { font-size: var(--font-xl); }
+h2 { font-size: var(--font-lg); }
+h3 { font-size: var(--font-md); }
+h4 { font-size: var(--font-sm); }
 
-h4 {
-  font-size: calc(0.4rem + 0.6vw);
-}
+/* Interactive Elements */
 input,
 select,
 button,
@@ -47,66 +40,93 @@ a {
   outline: none;
   border: none;
   cursor: pointer;
-  transition:0.5s ease;
+  transition: var(--transition-slow);
 }
+
 a {
   text-decoration: none;
 }
+
 input,
 select {
-  padding: 5px;
-  border-radius: 15px;
-  font-size: calc(0.7rem + 0.7vw);
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-md);
+  box-sizing: border-box;
+  max-width: 100%;
 }
+
 input:focus,
 select:focus,
 button:hover {
-  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.32);
-}
-.screen-element {
-  margin: calc(8px + 0.4vh);
-  border-radius: 15px;
-  padding: calc(10px + 0.5vh) calc(10px + 0.5vw);
-  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.32);
-  transition:0.5s ease;
+  box-shadow: var(--shadow-hover);
 }
 
-/* Add specific screen element styles for charts */
-.screen-element.chart,
-.screen-element.chart-mini {
-  padding: calc(5px + 0.3vh) calc(5px + 0.3vw);
-  min-height: auto;
+/* Common Components */
+.screen-element {
+  margin: var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-default);
+  transition: var(--transition-slow);
 }
 
 .button {
-  cursor: pointer;
-  font-size: calc(0.8rem + 0.4vw);
+  font-size: var(--font-md);
   font-weight: bold;
   width: calc(85px + 2vw);
-  height: calc(35px + 1vh);
-  border-radius: 20px;
+  height: var(--input-height);
+  border-radius: var(--border-radius-lg);
   border: 1px solid transparent;
 }
+
 .button-submit {
   width: calc(150px + 3vw);
   height: calc(55px + 1.5vh);
-  font-size: calc(0.7rem + 0.3vw);
+  font-size: var(--font-sm);
 }
+
+/* Charts */
 .chart {
-  width: 95%;
+  width: 94%;
+  margin: var(--spacing-md);
 }
+
 .chart-mini {
-  width: 44%;
+  width: calc(46.5% - (2 * var(--spacing-md)));
+  margin: var(--spacing-md);
   display: inline-flex;
   flex-direction: column;
   vertical-align: top;
 }
+
+/* Utilities */
 .clear {
   clear: both;
 }
 
+/* Input Overrides */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+input::placeholder {
+  color: inherit;
+}
+
+.settings-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - var(--nav-height));
+  width: 100%;
+  padding: var(--spacing-lg);
+}
+
+.settings-wrapper {
+  width: 100%;
+  max-width: 800px;
+  margin: auto;
 }

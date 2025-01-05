@@ -1,0 +1,61 @@
+{
+    "intercept": 25.62242231477191,
+    "coefficients": [
+        {
+            "predictor": "Session_Duration",
+            "coefficient": 696.4002174605546,
+            "confidence_interval": [
+                682.5028847765769,
+                710.2987168111442
+            ]
+        },
+        {
+            "predictor": "Water_Intake",
+            "coefficient": 4.470012709669835,
+            "confidence_interval": [
+                3.8475423447795167,
+                5.092387169720021
+            ]
+        },
+        {
+            "predictor": "Session_Duration:Water_Intake",
+            "coefficient": 0.7619059330738247,
+            "confidence_interval": [
+                0.5161905721969404,
+                1.007621293950709
+            ]
+        },
+        {
+            "predictor": "Fat_Percentage",
+            "coefficient": -23.661051758188172,
+            "confidence_interval": [
+                -32.27067791614459,
+                -15.051759009446714
+            ]
+        },
+        {
+            "predictor": "Age",
+            "coefficient": -3.3847497197829806,
+            "confidence_interval": [
+                -3.6365676999643686,
+                -3.132981022264555
+            ]
+        },
+        {
+            "predictor": "Ex_Level_Workout_Freq",
+            "coefficient": -4.0097,
+            "confidence_interval": [
+                -5.308,
+                -2.711
+            ]
+        },
+        {
+            "predictor": "Avg_BPM",
+            "coefficient": 90.1605,
+            "confidence_interval": [
+                87.103,
+                93.218
+            ]
+        }
+    ]
+}

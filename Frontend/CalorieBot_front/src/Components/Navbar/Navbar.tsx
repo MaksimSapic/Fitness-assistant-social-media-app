@@ -1,7 +1,7 @@
 import { useTheme } from "../../Theme/Theme";
 import "./Navbar.css";
-import { Link } from "react-router-dom";
-import { Fragment, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Fragment, useEffect, useState } from "react";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
@@ -17,28 +17,38 @@ import {
   ListItemIcon,
 } from "@mui/material";
 import { Settings, Logout } from "@mui/icons-material";
+import { authenticatedFetch } from "../../utils/api";
+import config from "../../config";
+import { useUserContext } from "../../Context/UserContext";
 
 function Navbar() {
   const { theme, toggleTheme } = useTheme();
-  const [selected, setSelected] = useState("Home");
+
+  const location = useLocation();
+  const [selected, setSelected] = useState(() => {
+    const path = location.pathname;
+    if (path.includes("home")) return "Home";
+    if (path.includes("news")) return "News";
+    if (path.includes("profile")) return "Profile";
+    if (path.includes("settings")) return "Settings";
+    return "Home";
+  });
 
   const data = localStorage.getItem("user");
   const user = data ? JSON.parse(data) : null;
   const username = user ? user["first_name"] + " " + user["last_name"] : "";
-  //mock data
+  const { profileAvatar } = useUserContext();
   const notifications = [
-    "make the login page",
-    "backend is waiting",
-    "jel sapunjas macora?",
+    "This is a mock-up",
+    "This functionality coming soon.",
+    "If i ever feel like it",
   ];
-  // states for dropdowns
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const open = Boolean(anchorEl);
   const isOpen = (menuId: string) => openMenu === menuId;
   const handleClick =
     (menuId: string) => (event: React.MouseEvent<HTMLElement>) => {
-      // event.stopPropagation();
       if (openMenu && openMenu !== menuId) {
         setOpenMenu(null);
         setAnchorEl(null);
@@ -50,9 +60,6 @@ function Navbar() {
     setOpenMenu(null);
     setAnchorEl(null);
   };
-  //
-
-  //notifications icon
   const notifs = (
     <>
       <Box
@@ -62,7 +69,6 @@ function Navbar() {
         <Tooltip title="notifications">
           <NotificationsNoneIcon
             style={{
-              // backgroundColor: theme.background,
               borderRadius: 90,
               transition: "0.5s ease-in",
               color: theme.icon,
@@ -144,17 +150,32 @@ function Navbar() {
         onClick={(event) => handleClick("profile-menu")(event)}
       >
         <Tooltip title={username}>
-          <PersonOutlineIcon
-            style={{
-              // backgroundColor: theme.background,
-              borderRadius: 90,
-              transition: "0.5s ease-in",
-              color: theme.icon,
-            }}
-            aria-controls={open ? "profile-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
-          />
+          {profileAvatar ? (
+            <img
+              src={profileAvatar}
+              alt="Profile"
+              style={{
+                width: "30px",
+                height: "30px",
+                borderRadius: "50%",
+                objectFit: "cover",
+              }}
+              aria-controls={open ? "profile-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? "true" : undefined}
+            />
+          ) : (
+            <PersonOutlineIcon
+              style={{
+                borderRadius: 90,
+                transition: "0.5s ease-in",
+                color: theme.icon,
+              }}
+              aria-controls={open ? "profile-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? "true" : undefined}
+            />
+          )}
         </Tooltip>
       </Box>
       <Menu
@@ -205,19 +226,28 @@ function Navbar() {
         disablePortal
         keepMounted
       >
-        <MenuItem onClick={handleClose}>
-          <Avatar />
-          <Link
-            style={{ color: theme.text_plain }}
-            className="menu-link 1"
-            to="/profile"
-            onClick={() => {
-              setSelected("profile");
-            }}
-          >
+        <Link
+          style={{ color: theme.text_plain }}
+          className="menu-link 1"
+          to="/profile"
+          onClick={() => {
+            setSelected("profile");
+          }}
+        >
+          <MenuItem onClick={handleClose} style={{ color: theme.text_plain }}>
+            {profileAvatar ? (
+              <img
+                className="profile-avatar"
+                src={profileAvatar}
+                alt="Profile"
+                style={{ marginRight: "10px" }}
+              />
+            ) : (
+              <Avatar />
+            )}
             My profile
-          </Link>
-        </MenuItem>
+          </MenuItem>
+        </Link>
         <Divider />
         <MenuItem onClick={handleClose}>
           <ListItemIcon>
@@ -263,6 +293,31 @@ function Navbar() {
     </>
   );
 
+  const handleThemeToggle = async () => {
+    const abortController = new AbortController();
+    try {
+      toggleTheme();
+      const response = await authenticatedFetch(
+        `${config.url}api/update-theme-preference/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            theme_preference: theme === lightTheme ? true : false,
+          }),
+          signal: abortController.signal,
+        }
+      );
+    } catch (error) {
+      if (error.name !== 'AbortError') {
+        console.error("Error updating theme preference:", error);
+      }
+    }
+    return () => abortController.abort();
+  };
+
   // NAVBAR CODE
   return (
     <>
@@ -275,9 +330,15 @@ function Navbar() {
         <h2
           className="nav-left"
           style={{ color: theme.text_plain, transition: "0.5s ease-in" }}
+          onClick={() => {
+            setSelected("Home");
+          }}
         >
-          CalorieBot
+          <Link to="/home" style={{ color: theme.text_plain }}>
+            CalorieBot
+          </Link>
         </h2>
+
         <div className="nav-right">
           <div className="options-buttons">
             <Tooltip title="Home">
@@ -293,7 +354,7 @@ function Navbar() {
                 onClick={() => {
                   setSelected("Home");
                 }}
-                to="/"
+                to="/home"
               >
                 Home
               </Link>
@@ -328,7 +389,7 @@ function Navbar() {
                     transition: "0.5s ease-in",
                     color: theme.icon,
                   }}
-                  onClick={toggleTheme}
+                  onClick={handleThemeToggle}
                 ></DarkModeIcon>
               ) : (
                 <LightModeIcon
@@ -337,7 +398,7 @@ function Navbar() {
                     transition: "0.5s ease-in",
                     color: theme.icon,
                   }}
-                  onClick={toggleTheme}
+                  onClick={handleThemeToggle}
                 ></LightModeIcon>
               )}
             </Tooltip>
