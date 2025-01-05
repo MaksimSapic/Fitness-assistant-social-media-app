@@ -1,0 +1,61 @@
+.settings-container {
+  padding: var(--spacing-lg);
+  min-height: calc(100vh - var(--nav-height));
+}
+
+.settings-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.settings-panel {
+  padding: var(--spacing-lg);
+}
+
+.settings-panel h2 {
+  margin-bottom: var(--spacing-lg);
+  color: var(--text-plain);
+}
+
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.settings-form input,
+.settings-form textarea {
+  padding: var(--spacing-sm);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-md);
+}
+
+.settings-form textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.save-button {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  font-weight: bold;
+  transition: opacity 0.3s ease;
+  width: 30%;
+  margin: auto;
+}
+
+.save-button:hover {
+  opacity: 0.9;
+}

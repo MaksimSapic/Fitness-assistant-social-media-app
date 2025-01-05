@@ -12,13 +12,15 @@ function NewsSideBar() {
   const getUsers = async () => {
     setLoading(true);
     try {
-      const response = await authenticatedFetch(`${config.url}api/get-people/`, {
-        method: "GET",
-      });
-      
+      const response = await authenticatedFetch(
+        `${config.url}api/get-people/`,
+        {
+          method: "GET",
+        }
+      );
+
       if (response?.ok) {
         const data = await response.json();
-        console.log(data);
         setPeople(data);
       }
     } catch (error) {
@@ -37,17 +39,19 @@ function NewsSideBar() {
         className="screen-element sidebar"
         style={{
           backgroundColor: theme.element,
-          flexDirection: 'column',
-          gap: '10px',
-          padding: '15px'
+          flexDirection: "column",
+          gap: "10px",
+          padding: "15px",
         }}
       >
-        <div style={{ 
-          color: theme.text_plain, 
-          fontSize: 'calc(0.9rem + 0.3vw)',
-          fontWeight: 'bold',
-          marginBottom: '10px'
-        }}>
+        <div
+          style={{
+            color: theme.text_plain,
+            fontSize: "calc(0.9rem + 0.3vw)",
+            fontWeight: "bold",
+            marginBottom: "10px",
+          }}
+        >
           <h3>Suggested People</h3>
         </div>
         {people.map((person) => (
@@ -61,7 +65,7 @@ function NewsSideBar() {
               bio: person.biography || "",
               profile_picture_avatar: person.profile_picture_avatar,
               profile_picture_type: person.profile_picture_type,
-              is_following: person.is_following
+              is_following: person.is_following,
             }}
           />
         ))}

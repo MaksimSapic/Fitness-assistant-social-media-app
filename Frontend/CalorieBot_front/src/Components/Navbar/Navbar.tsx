@@ -37,11 +37,11 @@ function Navbar() {
   const data = localStorage.getItem("user");
   const user = data ? JSON.parse(data) : null;
   const username = user ? user["first_name"] + " " + user["last_name"] : "";
-  const {profileAvatar} = useUserContext();
+  const { profileAvatar } = useUserContext();
   const notifications = [
-    "make the login page",
-    "backend is waiting",
-    "jel sapunjas macora?",
+    "This is a mock-up",
+    "This functionality coming soon.",
+    "If i ever feel like it",
   ];
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
@@ -293,6 +293,31 @@ function Navbar() {
     </>
   );
 
+  const handleThemeToggle = async () => {
+    const abortController = new AbortController();
+    try {
+      toggleTheme();
+      const response = await authenticatedFetch(
+        `${config.url}api/update-theme-preference/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            theme_preference: theme === lightTheme ? true : false,
+          }),
+          signal: abortController.signal,
+        }
+      );
+    } catch (error) {
+      if (error.name !== 'AbortError') {
+        console.error("Error updating theme preference:", error);
+      }
+    }
+    return () => abortController.abort();
+  };
+
   // NAVBAR CODE
   return (
     <>
@@ -364,7 +389,7 @@ function Navbar() {
                     transition: "0.5s ease-in",
                     color: theme.icon,
                   }}
-                  onClick={toggleTheme}
+                  onClick={handleThemeToggle}
                 ></DarkModeIcon>
               ) : (
                 <LightModeIcon
@@ -373,7 +398,7 @@ function Navbar() {
                     transition: "0.5s ease-in",
                     color: theme.icon,
                   }}
-                  onClick={toggleTheme}
+                  onClick={handleThemeToggle}
                 ></LightModeIcon>
               )}
             </Tooltip>

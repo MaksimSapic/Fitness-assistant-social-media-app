@@ -20,5 +20,7 @@ urlpatterns = [
     path('follow/<int:user_id>/', views.follow_user, name='follow-user'),
     path('unfollow/<int:user_id>/', views.unfollow_user, name='unfollow-user'),
     path('feed/', views.get_feed, name='user-feed'),
+    path('update-user/', views.update_user, name='update_user'),
+    path('update-theme-preference/', views.update_theme_preference, name='update_theme_preference'),
     path('', include(router.urls)),
 ]

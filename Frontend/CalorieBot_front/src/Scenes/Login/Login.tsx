@@ -28,7 +28,6 @@ function Login() {
       const data = await response.json();
 
       if (response.ok) {
-        // Store user data and tokens
         localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("tokens", JSON.stringify(data.tokens));
         navigate("/home");

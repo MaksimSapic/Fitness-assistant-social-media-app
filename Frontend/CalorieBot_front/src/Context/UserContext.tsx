@@ -19,38 +19,39 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   const user = userdata ? JSON.parse(userdata) : null;
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [profileAvatar, setProfileAvatar] = useState<string | null>(null);
-
   const fetchImages = async () => {
     if (!user?.id) return;
-    
+
     try {
       if (profileImage) URL.revokeObjectURL(profileImage);
       if (profileAvatar) URL.revokeObjectURL(profileAvatar);
-
-      const profileResponse = await authenticatedFetch(
-        `${config.url}api/profile-picture/${user.id}`,
-        { method: "GET" }
-      );
-      
-      if (profileResponse?.ok) {
-        const blob = await profileResponse.blob();
-        const imageUrl = URL.createObjectURL(blob);
-        setProfileImage(imageUrl);
-      } else {
-        setProfileImage(null);
+      if (user.profile_picture) {
+        const profileResponse = await authenticatedFetch(
+          `${config.url}api/profile-picture/${user.id}`,
+          { method: "GET" }
+        );
+        if (profileResponse?.ok) {
+          const blob = await profileResponse.blob();
+          const imageUrl = URL.createObjectURL(blob);
+          setProfileImage(imageUrl);
+        } else {
+          setProfileImage(null);
+        }
       }
 
-      const avatarResponse = await authenticatedFetch(
-        `${config.url}api/profile-picture-avatar/${user.id}`,
-        { method: "GET" }
-      );
-      
-      if (avatarResponse?.ok) {
-        const blob = await avatarResponse.blob();
-        const imageUrl = URL.createObjectURL(blob);
-        setProfileAvatar(imageUrl);
-      } else {
-        setProfileAvatar(null);
+      if (user.profile_picture_avatar) {
+        const avatarResponse = await authenticatedFetch(
+          `${config.url}api/profile-picture-avatar/${user.id}`,
+          { method: "GET" }
+        );
+
+        if (avatarResponse?.ok) {
+          const blob = await avatarResponse.blob();
+          const imageUrl = URL.createObjectURL(blob);
+          setProfileAvatar(imageUrl);
+        } else {
+          setProfileAvatar(null);
+        }
       }
     } catch (error) {
       console.error("Error fetching images:", error);
@@ -74,12 +75,12 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <UserContext.Provider
-      value={{ 
-        profileImage, 
-        setProfileImage, 
-        profileAvatar, 
+      value={{
+        profileImage,
+        setProfileImage,
+        profileAvatar,
         setProfileAvatar,
-        refreshImages: fetchImages 
+        refreshImages: fetchImages,
       }}
     >
       {children}

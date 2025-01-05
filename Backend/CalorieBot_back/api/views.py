@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from .models import User, WorkoutSession, Post, Comment, Attachment, PostLike
-from .serializers import UserSerializer, WorkoutSessionSerializer, PostSerializer, CommentSerializer, AttachmentSerializer
+from .serializers import UserSerializer, WorkoutSessionSerializer, PostSerializer, CommentSerializer, AttachmentSerializer, PostCreateSerializer
 import pickle
 from django.db.models import Sum, Avg
 import math as m
@@ -194,11 +194,10 @@ class PostPagination(PageNumberPagination):
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
-    serializer_class = PostSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     parser_classes = (MultiPartParser, FormParser)
     pagination_class = PostPagination
-    
+
     def get_queryset(self):
         queryset = Post.objects.all().order_by('-created_at')
         user_id = self.request.query_params.get('user', None)
@@ -211,7 +210,13 @@ class PostViewSet(viewsets.ModelViewSet):
             
         return queryset
     
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return PostCreateSerializer
+        return PostSerializer
+
     def perform_create(self, serializer):
+        print("Creating post with data:", self.request.data)
         post = serializer.save()
         if 'file' in self.request.FILES:
             file_obj = self.request.FILES['file']
@@ -420,3 +425,62 @@ def get_feed(request):
     serializer = PostSerializer(result_page, many=True)
     
     return paginator.get_paginated_response(serializer.data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def update_user(request):
+    try:
+        user = request.user
+        data = request.data
+
+        # Update basic fields
+        user.first_name = data.get('first_name', user.first_name)
+        user.last_name = data.get('last_name', user.last_name)
+        user.email = data.get('email', user.email)
+        user.biography = data.get('biography', user.biography)
+
+        # Update numeric fields with proper type conversion
+        if 'weight' in data and data['weight']:
+            user.weight = float(data['weight'])
+        if 'height' in data and data['height']:
+            user.height = float(data['height'])
+        if 'fat_percentage' in data and data['fat_percentage']:
+            user.fat_percentage = float(data['fat_percentage'])
+        if 'workout_frequency' in data and data['workout_frequency']:
+            user.workout_frequency = int(data['workout_frequency'])
+        if 'experience_level' in data and data['experience_level']:
+            user.experience_level = int(data['experience_level'])
+        if 'age' in data and data['age']:
+            user.age = int(data['age'])
+
+        # Recalculate BMI
+        user.bmi = user.weight / (user.height * user.height)
+        
+        user.save()
+
+        # Use the UserSerializer to return the updated user data
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+
+    except ValueError as e:
+        return Response({'error': 'Invalid numeric value provided'}, status=400)
+    except Exception as e:
+        return Response({'error': str(e)}, status=400)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def update_theme_preference(request):
+    try:
+        theme_preference = request.data.get('theme_preference')
+        if not isinstance(theme_preference, bool):
+            return Response({'error': 'Theme preference must be a boolean'}, status=400)
+        
+        user = request.user
+        user.preferred_theme = theme_preference
+        user.save()
+        
+        return Response({
+            'preferred_theme': user.preferred_theme
+        })
+    except Exception as e:
+        return Response({'error': str(e)}, status=400)

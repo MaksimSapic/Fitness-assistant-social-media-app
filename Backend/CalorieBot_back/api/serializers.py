@@ -25,7 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
             'password', 'weight', 'height', 'gender', 'age', 
             'fat_percentage', 'workout_frequency', 'bmi', 
             'experience_level', 'preferred_theme', 'followers_count',
-            'following_count', 'posts_count', 'biography',
+            'following_count', 'posts_count', 'biography','profile_picture',
             'profile_picture_avatar', 'profile_picture_type'
         )
         read_only_fields = ('id', 'bmi', 'followers_count', 'following_count', 'posts_count')
@@ -100,6 +100,17 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ['id', 'user', 'content', 'created_at', 'attachments', 
                  'likes_count', 'is_liked', 'comments_count']
         read_only_fields = ['user', 'likes_count', 'comments_count']
+
+    def create(self, validated_data):
+        print("govna")
+        request = self.context.get('request')
+        validated_data['user'] = request.user
+        return super().create(validated_data)        
+
+class PostCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ['title', 'content']
 
     def create(self, validated_data):
         request = self.context.get('request')

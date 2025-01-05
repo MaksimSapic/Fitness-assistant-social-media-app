@@ -41,7 +41,7 @@ export interface WorkoutStats {
   };
 }
 
-export const useWorkoutStats = (userId: number) => {
+export const useWorkoutStats = (userId: Number) => {
   const [stats, setStats] = useState<WorkoutStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

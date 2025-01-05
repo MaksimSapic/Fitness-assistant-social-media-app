@@ -42,12 +42,26 @@ function CreatePost() {
   };
 
   const handleSubmit = async () => {
+    if (!user || !user.id) {
+      console.error("User data not available");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("title", "New Post");
     formData.append("content", content);
+    // Remove the user field since we'll get it from the request
     if (attachment) {
       formData.append("file", attachment);
     }
+
+    // Debug logs
+    for (let pair of formData.entries()) {
+      console.log('Form data:', pair[0], pair[1]);
+    }
+    // Debug logs
+    console.log("User ID:", user.id);
+    console.log("Content:", content);
 
     try {
       const response = await postFetch(`${config.url}api/posts/`, {
@@ -55,12 +69,18 @@ function CreatePost() {
         body: formData,
       });
 
+      // Log the full response
+      const responseText = await response?.text();
+      console.log("Response status:", response?.status);
+      console.log("Response text:", responseText);
+
       if (response?.ok) {
         setCreatePost(false);
         setContent("");
         removeAttachment();
+        window.location.reload();
       } else {
-        console.error("Failed to create post:", await response?.text());
+        console.error("Failed to create post:", responseText);
       }
     } catch (error) {
       console.error("Error creating post:", error);
