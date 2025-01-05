@@ -90,8 +90,9 @@ function Login() {
               type="submit"
               className="button button-login"
               style={{
-                backgroundColor: theme.interactable,
-                color: theme.text,
+                border: `2px solid ${theme.interactable}`,
+                backgroundColor: theme.element,
+                color: theme.text_plain,
               }}
             >
               Login
