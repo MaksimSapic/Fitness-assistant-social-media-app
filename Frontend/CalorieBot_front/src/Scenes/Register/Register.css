@@ -28,7 +28,9 @@
 
 .button-group {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   margin: var(--spacing-lg) 0;
 }
 

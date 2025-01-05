@@ -91,7 +91,7 @@ function Register() {
         className="screen-element register-box"
         style={{ backgroundColor: theme.element }}
       >
-        <h1 style={{ color: theme.text }}>
+        <h1 style={{ color: theme.text_plain }}>
           {step === 1 ? "Create Account" : "Physical Information"}
         </h1>
 
@@ -181,8 +181,9 @@ function Register() {
                 className="button button-next"
                 onClick={handleNext}
                 style={{
-                  backgroundColor: theme.interactable,
-                  color: theme.text,
+                  border: `2px solid ${theme.interactable}`,
+                  backgroundColor: theme.element,
+                  color: theme.text_plain,
                 }}
               >
                 Next
@@ -236,7 +237,7 @@ function Register() {
                   sx={{
                     backgroundColor: theme.interactable,
                     color: theme.text_plain,
-                    width:"72%",
+                    width: "72%",
                     fontWeight: "bold",
                     transition: "all 0.3s ease",
                     borderRadius: "15px",
@@ -356,8 +357,9 @@ function Register() {
                   className="button button-back"
                   onClick={handleBack}
                   style={{
-                    backgroundColor: theme.interactable,
-                    color: theme.text,
+                    border: `2px solid ${theme.interactable}`,
+                    backgroundColor: theme.element,
+                    color: theme.text_plain,
                   }}
                 >
                   Back
@@ -366,8 +368,9 @@ function Register() {
                   type="submit"
                   className="button button-register"
                   style={{
-                    backgroundColor: theme.interactable,
-                    color: theme.text,
+                    border: `2px solid ${theme.interactable}`,
+                    backgroundColor: theme.element,
+                    color: theme.text_plain,
                   }}
                 >
                   Register
@@ -377,7 +380,11 @@ function Register() {
           )}
         </form>
 
-        <Link to="/login" className="login-link" style={{ color: theme.text }}>
+        <Link
+          to="/login"
+          className="login-link"
+          style={{ color: theme.text_plain }}
+        >
           Already have an account? Login
         </Link>
       </div>

@@ -57,8 +57,8 @@ function Profile() {
           style={{ backgroundColor: theme.element }}
         >
           <h2 style={{ color: theme.text_plain }}>Your posts</h2>
-          <UserPosts />
           <CreatePost />
+          <UserPosts />
         </div>
         <div
           className="screen-element insights"
