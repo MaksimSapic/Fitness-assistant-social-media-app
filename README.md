@@ -15,6 +15,7 @@ MODEL:
 
 
 CLIENT APP:
+
 -Session calculator that predicts calories burned based on the model
 
 -User profiles
