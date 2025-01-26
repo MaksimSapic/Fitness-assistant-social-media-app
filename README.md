@@ -8,26 +8,24 @@ Planned functionalities:
 
 MODEL:
 
-
 -prediction of calories burned in a workout session based on varios parameters provided by the user after a workout.
 
+-suggestions and  statistics based on predictions of the model
+
+
+
 CLIENT APP:
+-Session calculator that predicts calories burned based on the model
 
+-User profiles
 
--Posting, text markup, comments
-
+-Posts,likes,comments
 
 -image upload, attachments(nuitrition plans and such documents)
 
-
 -Keeping track of personal stats and workout results
-
--ability to search for other users of the app
-
 
 -"Following" other users and recieving notifications of their posts
 
 -Account settings and personal data editing
 
-
--registering as a "professional" -> someone to ask for advice on the app
